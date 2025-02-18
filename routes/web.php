@@ -1,0 +1,99 @@
+<?php
+
+use App\Http\Controllers\Apps\PermissionManagementController;
+use App\Http\Controllers\Apps\RoleManagementController;
+use App\Http\Controllers\Apps\UserManagementController;
+use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\DashboardController;
+use App\Livewire\Konfigurasi\Masterdata\Menu\MenuIndex;
+use App\Livewire\TestLivewire;
+use App\Models\Menu;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/', [DashboardController::class, 'index']);
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::name('user-management.')->prefix('user-management')->group(function () {
+        Route::resource('users', UserManagementController::class)->names('users');
+        Route::resource('roles', RoleManagementController::class)->names('roles');
+        Route::resource('permissions', PermissionManagementController::class)->names('permissions');
+    });
+
+    Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
+        Route::name('masterdata.')->prefix('masterdata')->group(function () {
+            Route::get('menu', MenuIndex::class)->name('menu');
+            Route::get('menu/{id}', function ($id) {
+                $menu = Menu::find($id)->toArray();
+                return view('livewire.konfigurasi.masterdata.menu.detail.index', ['menu_id' => $id, 'menu' => $menu]);
+            })->name('menu.show');
+        });
+    });
+    // Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
+    //     Route::name('masterdata.')->prefix('masterdata')->group(function () {
+    //         Route::get('menu', function () {
+    //             return view('livewire.konfigurasi.masterdata.menu.index');
+    //         })->name('menu');
+    //         Route::get('menu/{id}', function ($id) {
+    //             $menu = Menu::find($id)->toArray();
+    //             return view('livewire.konfigurasi.masterdata.menu.detail.index', ['menu_id' => $id, 'menu' => $menu]);
+    //         })->name('menu.show');
+    //     });
+    // });
+
+
+    // routes/web.php
+
+    // Route::name('account.')->prefix('account')->group(function () {
+    //     Route::resource('data', MenuController::class)->names('data');
+    // });
+
+    // Route::name('user.')->prefix('user')->group(function () {
+    //     Route::resource('data', MenuController::class)->names('data');
+    // });
+
+    // Route::name('administrasi.')->prefix('administrasi')->group(function () {
+    //     Route::name('laporan.')->prefix('laporan')->group(function () {
+    //         Route::resource('laporan_pemasukan', UserManagementController::class)->names('laporan_pemasukan');
+    //     });
+    // });
+
+    // Route::name('web_asm.')->prefix('web_asm')->group(function () {
+    //     Route::name('content.')->prefix('content')->group(function () {
+    //         Route::resource('landing_page', UserManagementController::class)->names('landing_page');
+    //     });
+    // });
+
+    // Route::name('web_tpq.')->prefix('web_tpq')->group(function () {
+    //     Route::name('content.')->prefix('content')->group(function () {
+    //         Route::resource('landing_page', UserManagementController::class)->names('landing_page');
+    //     });
+    // });
+});
+
+
+Route::get('/buat-storage-link', function () {
+    symlink(storage_path('app/public'), public_path('storage'));
+    return 'Storage link berhasil dibuat!';
+});
+
+Route::get('/error', function () {
+    abort(500);
+})->name('error');
+
+Route::get('/auth/redirect/{provider}', [SocialiteController::class, 'redirect']);
+
+require __DIR__ . '/auth.php';
