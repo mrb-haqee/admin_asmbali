@@ -32,6 +32,11 @@ class DaftarMenu extends Component
         $this->dataDaftar = $query->get()->toArray();
     }
 
+    public function updated()
+    {
+        $this->getDataDaftar();
+    }
+
     public function mount()
     {
         $this->range = date('Y-m-d', strtotime('-1 month')) . ' - ' . date('Y-m-d');

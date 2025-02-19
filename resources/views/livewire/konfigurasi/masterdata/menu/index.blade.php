@@ -1,3 +1,7 @@
+{{-- @php
+    use Diglactic\Breadcrumbs\Breadcrumbs;
+@endphp --}}
+
 <x-default-layout>
 
     @section('title')

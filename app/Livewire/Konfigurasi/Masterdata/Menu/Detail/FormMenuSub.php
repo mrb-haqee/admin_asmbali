@@ -77,7 +77,7 @@ class FormMenuSub extends Component
 
     public function resetFlag(): void
     {
-        $this->flag === 'update' && $this->reset();
+        $this->flag === 'update' && $this->reset('name', 'flag', 'id');
     }
     public function hydrate(): void
     {

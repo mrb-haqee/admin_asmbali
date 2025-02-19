@@ -74,7 +74,7 @@
 
                 $('#table_menu [data-kt-action="update_row"]').each(function() {
                     $(this).on('click', function() {
-                        @this.call('update', $(this).data('menu-id'));
+                        @this.call('update', $(this).data('data-id'));
                     });
                 });
 
@@ -95,7 +95,7 @@
                             }
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                @this.call('delete', [$(this).data('menu-id')]);
+                                @this.call('delete', [$(this).data('data-id')]);
                             } else if (result.dismiss === Swal.DismissReason
                                 .cancel) {
                                 Swal.fire({
