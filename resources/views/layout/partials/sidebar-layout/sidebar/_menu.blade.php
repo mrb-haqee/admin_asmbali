@@ -74,7 +74,7 @@
                                     <div class="menu-item">
                                         <!--begin:Menu link-->
                                         <a class="menu-link {{ request()->routeIs("$kop.$routeMenu.$routeMenuSub.*") ? 'active' : '' }}"
-                                            href="{{ Route::has("$kop.$routeMenu.$routeMenuSub") ? route("$kop.$routeMenu.$routeMenuSub") : route('error') }}"
+                                            href="{{ Route::has("$kop.$routeMenu.$routeMenuSub.index") ? route("$kop.$routeMenu.$routeMenuSub.index") : route('error') }}"
                                             wire:navigate>
                                             <span class="menu-bullet">
                                                 <span class="bullet bullet-dot"></span>

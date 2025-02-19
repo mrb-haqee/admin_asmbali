@@ -9,12 +9,16 @@ use Spatie\Permission\Models\Role;
 $breadcrumbs = [
     'home' => ['Home', 'dashboard'],
     'dashboard' => ['Dashboard', 'dashboard', 'home'],
-    'user-management.index' => ['User Management', 'user-management.users.index', 'dashboard'],
-    'user-management.users.index' => ['Users', 'user-management.users.index', 'user-management.index'],
-    'user-management.users.show' => ['User', 'user-management.users.show', 'user-management.users.index', User::class],
-    'user-management.roles.index' => ['Roles', 'user-management.roles.index', 'user-management.index'],
-    'user-management.roles.show' => ['Role', 'user-management.roles.show', 'user-management.roles.index', Role::class],
-    'user-management.permissions.index' => ['Permissions', 'user-management.permissions.index', 'user-management.index'],
+    'konfigurasi.masterdata.menu.index' => ['Menu', 'konfigurasi.masterdata.menu.index', 'dashboard'],
+    'konfigurasi.masterdata.menu.show' => ['Menu Detail', 'konfigurasi.masterdata.menu.show', 'konfigurasi.masterdata.menu.index', Menu::class],
+
+
+    // 'user-management.index' => ['User Management', 'user-management.users.index', 'dashboard'],
+    // 'user-management.users.index' => ['Users', 'user-management.users.index', 'user-management.index'],
+    // 'user-management.users.show' => ['User', 'user-management.users.show', 'user-management.users.index', User::class],
+    // 'user-management.roles.index' => ['Roles', 'user-management.roles.index', 'user-management.index'],
+    // 'user-management.roles.show' => ['Role', 'user-management.roles.show', 'user-management.roles.index', Role::class],
+    // 'user-management.permissions.index' => ['Permissions', 'user-management.permissions.index', 'user-management.index'],
 ];
 
 foreach ($breadcrumbs as $name => $breadcrumb) {

@@ -5,6 +5,7 @@ use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\DashboardController;
+use App\Livewire\Konfigurasi\Masterdata\Menu\Detail\MenuSubIndex;
 use App\Livewire\Konfigurasi\Masterdata\Menu\MenuIndex;
 use App\Livewire\TestLivewire;
 use App\Models\Menu;
@@ -35,11 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
         Route::name('masterdata.')->prefix('masterdata')->group(function () {
-            Route::get('menu', MenuIndex::class)->name('menu');
-            Route::get('menu/{id}', function ($id) {
-                $menu = Menu::find($id)->toArray();
-                return view('livewire.konfigurasi.masterdata.menu.detail.index', ['menu_id' => $id, 'menu' => $menu]);
-            })->name('menu.show');
+            Route::get('menu', MenuIndex::class)->name('menu.index');
+            Route::get('menu/{id}', MenuSubIndex::class)->name('menu.show');
         });
     });
     // Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
