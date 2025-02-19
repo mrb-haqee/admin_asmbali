@@ -5,7 +5,7 @@
     @endsection
 
     @section('breadcrumbs')
-        {{ Breadcrumbs::render('user-management.permissions.index') }}
+        {{-- {{ Breadcrumbs::render('user-management.permissions.index') }} --}}
     @endsection
     Permissions
 
