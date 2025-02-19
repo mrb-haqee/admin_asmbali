@@ -47,7 +47,7 @@ class BootstrapDefault
         addHtmlAttribute('body', 'data-kt-app-sidebar-push-toolbar', 'true');
         addHtmlAttribute('body', 'data-kt-app-sidebar-push-footer', 'true');
         addHtmlAttribute('body', 'data-kt-app-toolbar-enabled', 'true');
-        // addHtmlAttribute('body', 'data-kt-app-toolbar-fixed', 'true');
+        addHtmlAttribute('body', 'data-kt-app-toolbar-fixed', 'true');
         // addHtmlAttribute('body', 'data-kt-app-aside-enabled', 'true');
         // addHtmlAttribute('body', 'data-kt-app-aside-fixed', 'true');
         addHtmlClass('body', 'app-default');
