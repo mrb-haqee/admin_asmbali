@@ -17,3 +17,5 @@ yarn-error.log
 /.idea
 /.vscode
 .DS_Store
+id_rsa
+id_rsa.pub
