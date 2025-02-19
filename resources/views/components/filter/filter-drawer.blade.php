@@ -32,7 +32,9 @@
         <div class="card-body hover-scroll-overlay-y">
             <div class="mb-5">
                 <!--begin::Label-->
-                <label class="form-label fs-5 fw-semibold mb-3">Range:</label>
+                <label class="form-label fs-5 fw-semibold mb-3 text-muted">
+                    {!! getIcon('calendar-8', 'text-gray-500 fs-2', 'outline', 'i') !!} Range
+                </label>
                 <!--end::Label-->
 
                 <!--begin::Input-->
@@ -61,7 +63,7 @@
 <!--end::View component-->
 
 @push('scripts')
-    <script data-navigate-once>
+    <script>
         function callback_daterangepicker(start, end) {
             let isToday = start.format("D MMM YY") === end.format("D MMM YY")
             let format = isToday ? 'D MMMM YYYY' : 'D MMM YY';

@@ -12,7 +12,7 @@
     @if (Str::contains($handle['action'], 'edit'))
         <!--begin::Menu item-->
         <div class="menu-item px-3 ">
-            <a href="#" class="menu-link px-3" data-menu-id="{{ $data['id'] }}" data-bs-toggle="modal"
+            <a href="#" class="menu-link px-3" data-data-id="{{ $data['id'] }}" data-bs-toggle="modal"
                 data-bs-target="#{{ $handle['idModal'] }}" data-kt-action="update_row">
                 <i class="fas fa-edit me-3"></i> Edit
             </a>
@@ -22,7 +22,7 @@
     @if (Str::contains($handle['action'], 'delete'))
         <!--begin::Menu item-->
         <div class="menu-item px-3">
-            <a href="#" class="menu-link px-3" data-menu-id="{{ $data['id'] }}" data-kt-action="delete_row">
+            <a href="#" class="menu-link px-3" data-data-id="{{ $data['id'] }}" data-kt-action="delete_row">
                 <i class="fas fa-trash me-3"></i>Delete
             </a>
         </div>
