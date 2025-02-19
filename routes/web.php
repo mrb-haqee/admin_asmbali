@@ -5,8 +5,10 @@ use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\DashboardController;
+use App\Livewire\Konfigurasi\Aksesibilitas\Roles\RolesIndex;
 use App\Livewire\Konfigurasi\Masterdata\Menu\Detail\MenuSubIndex;
 use App\Livewire\Konfigurasi\Masterdata\Menu\MenuIndex;
+use App\Livewire\Konfigurasi\Masterdata\User\UserIndex;
 use App\Livewire\TestLivewire;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Route;
@@ -38,6 +40,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::name('masterdata.')->prefix('masterdata')->group(function () {
             Route::get('menu', MenuIndex::class)->name('menu.index');
             Route::get('menu/{id}', MenuSubIndex::class)->name('menu.show');
+
+            Route::get('user', UserIndex::class)->name('user.index');
+        });
+
+        Route::name('aksesibilitas.')->prefix('masterdata')->group(function () {
+            Route::get('roles', RolesIndex::class)->name('roles.index');
+            // Route::get('roles', MenuIndex::class)->name('menu.index');
+
         });
     });
     // Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
