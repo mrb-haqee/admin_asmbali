@@ -83,9 +83,14 @@
 </div>
 
 @push('scripts')
-    <script data-navigate-once>
+    <script>
         $(document).ready(function() {
+
             var PageMenu = function() {
+                if (@this === undefined) {
+                    return;
+                }
+
 
                 $("#modal_menu [data-control='select2']").select2().on('change', function() {
                     @this.set($(this).data('select'), $(this).val())
@@ -140,6 +145,8 @@
 
                 KTMenu.createInstances();
             };
+
+            PageMenu();
 
             Livewire.hook("morphed", () => {
                 PageMenu();

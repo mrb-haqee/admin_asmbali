@@ -5,7 +5,7 @@
     @endsection
 
     @section('breadcrumbs')
-        {{ Breadcrumbs::render('user-management.permissions.index') }}
+        {{ Breadcrumbs::render('konfigurasi.masterdata.menu.index') }}
     @endsection
 
     <div class="card" id="menu">
@@ -75,5 +75,4 @@
     <x-filter.filter-drawer />
     @livewire('konfigurasi.masterdata.menu.form-menu')
 
-    {{-- @livewire('utiliti.filter.filter-drawer') --}}
 </x-default-layout>
