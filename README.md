@@ -16,7 +16,15 @@
 
 6. Run 'php artisan serve'
 
-## Types
+# Library
+
+## Penamaan File yang baik
+
+ - Index: untuk file awal
+ - Daftar: untuk file Data daftar
+ - Form: untuk file Form modal
+
+## Types Commit
 
 -   API or UI relevant changes
     -   `feat` Commits, that add or remove a new feature to the API or UI
@@ -29,3 +37,19 @@
 -   `build` Commits, that affect build components like build tool, ci pipeline, dependencies, project version, ...
 -   `ops` Commits, that affect operational components like infrastructure, deployment, backup, recovery, ...
 -   `chore` Miscellaneous commits e.g. modifying `.gitignore`
+
+
+## Livewire
+
+| Atribut        | Fungsi | Contoh Penggunaan |
+|---------------|--------|------------------|
+| `#[On]` | Mendengarkan event Livewire | `#[On('modal.show.role_name')] public function mountRole($role) { ... }` |
+| `#[Computed]` | Menjadikan metode sebagai properti yang dihitung ulang | `#[Computed] public function fullName() { return $this->first . ' ' . $this->last; }` |
+| `#[Locked]` | Mencegah properti diubah dari frontend | `#[Locked] public string $status = 'pending';` |
+| `#[Reactive]` | Menyinkronkan properti dengan frontend | `#[Reactive] public $search;` |
+| `#[Modelable]` | Memungkinkan binding dua arah dengan `wire:model` | `#[Modelable] public string $email = '';` |
+| `#[Url]` | Menghubungkan properti dengan query string di URL | `#[Url] public string $search = '';` |
+| `#[Rule]` | Menetapkan aturan validasi langsung dalam properti | `#[Rule('required\|min:3')] public string $name;` |
+| `#[LockedArray]` | Mencegah frontend mengubah struktur array | `#[LockedArray] public array $settings = ['theme' => 'dark'];` |
+| `#[Persist]` | Menyimpan nilai properti ke sesi agar tetap ada setelah refresh | `#[Persist] public int $counter = 0;` |
+
