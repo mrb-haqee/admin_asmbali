@@ -13,6 +13,8 @@ $breadcrumbs = [
     'konfigurasi.masterdata.menu.show' => ['Menu Detail', 'konfigurasi.masterdata.menu.show', 'konfigurasi.masterdata.menu.index', Menu::class],
 
     'konfigurasi.masterdata.user.index' => ['User', 'konfigurasi.masterdata.user.index', 'dashboard'],
+    'konfigurasi.aksesibilitas.roles.index' => ['Roles', 'konfigurasi.aksesibilitas.roles.index', 'dashboard'],
+    'konfigurasi.aksesibilitas.roles.show' => ['Role Detail', 'konfigurasi.aksesibilitas.roles.show', 'konfigurasi.aksesibilitas.roles.index', Role::class],
 
     // 'user-management.index' => ['User Management', 'user-management.users.index', 'dashboard'],
     // 'user-management.users.index' => ['Users', 'user-management.users.index', 'user-management.index'],
