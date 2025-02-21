@@ -119,30 +119,13 @@
 
     @push('scripts')
         <script data-navigate-once>
-            (function() {
-                const PageFunction = function() {
-
-                    $('[data-kt-action="update_row"]').on('click', function() {
-                        let roleName = $(this).data('role-name');
-                        Livewire.dispatch('aksesibilitas.roles.show', [roleName]);
-                    });
-
-                    // ============= JANGAN DI UBAH =============
-                    KTMenu.createInstances();
-                };
-
-                $(document).ready(function() {
-                    PageFunction();
-
-                    Livewire.hook("morphed", () => {
-
-                        PageFunction();
-                    })
-
+            $(document).ready(function() {
+                $(document).on('click', '[data-kt-action="update_row"]', function() {
+                    let roleName = $(this).data('role-name');
+                    Livewire.dispatch('aksesibilitas.roles.show', [roleName]);
                 });
-            })();
+            });
         </script>
-      
     @endpush
 
 </x-default-layout>

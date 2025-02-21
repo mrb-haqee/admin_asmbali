@@ -2,14 +2,17 @@
 
 namespace App\Livewire\Konfigurasi\Aksesibilitas\Roles;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
 
 class DaftarRoles extends Component
 {
 
-    protected $listeners = ['success' => '$refresh'];
 
+    public $listeners = ['success' => '$refresh', 'error' => '$refresh', 'swal' => '$refresh'];
+
+    #[On('success', 'error', 'swal')]
     public function render()
     {
         $roles = Role::with('permissions')->get();

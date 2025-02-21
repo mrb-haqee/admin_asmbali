@@ -24,17 +24,18 @@ class FormRoles extends Component
 
 
     #[On('aksesibilitas.roles.show')]
-    public function showForm($role_name = '')
+    public function showForm($id)
     {
-        if (empty($role_name)) {
+
+        if ($id === null) {
             $this->role = new Role;
             $this->name = '';
             return;
         }
 
-        $role = Role::where('name', $role_name)->first();
-        if (is_null($role)) {
-            $this->dispatch('error', 'The selected role [' . $role_name . '] is not found');
+        $role = Role::where('id', $id)->first();
+        if (!$role) {
+            $this->dispatch('error', 'The selected role is not found');
             return;
         }
 
@@ -45,24 +46,22 @@ class FormRoles extends Component
     }
 
     #[On('aksesibilitas.roles.delete')]
-    public function deleteRole($role_name)
+    public function deleteRole($id)
     {
 
-        $role = Role::where('name', $role_name)->first();
+        $role = Role::where('id', $id)->first();
 
-        if (is_null($role)) {
-            $this->dispatch('error', 'The selected role [' . $role_name . '] is not found');
+        if (!$role) {
+            $this->dispatch('error', 'Role tidak ditemukan.');
             return;
         }
 
         $role->delete();
 
-        $this->dispatch('success', 'Role [' . $role_name . '] has been deleted successfully');
+        $this->dispatch('success', 'Role has been deleted successfully');
     }
-    public function testFungsi($role_name)
-    {
-        dd($role_name);
-    }
+
+
     public function submit()
     {
         $this->validate();
@@ -74,6 +73,7 @@ class FormRoles extends Component
 
         $this->role->syncPermissions($this->checked_permissions);
 
+        $this->reset('name', 'checked_permissions');
         $this->dispatch('success', 'Permissions for ' . ucwords($this->role->name) . ' role updated');
     }
 
