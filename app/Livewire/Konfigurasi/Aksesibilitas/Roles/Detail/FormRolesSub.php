@@ -13,7 +13,7 @@ class FormRolesSub extends Component
     public array $users;
     public Role $role;
 
-    #[On('aksesibilitas.roles.detail.form-roles-sub.select2multiple')]
+    // #[On('aksesibilitas.roles.detail.form-roles-sub.select2multiple')]
     public function select2multiple($users)
     {
         $this->users = $users;
@@ -29,16 +29,19 @@ class FormRolesSub extends Component
                 $user->assignRole($this->role);
             }
 
-            $this->dispatch('success', __('User updated'));
+            $this->dispatch('success', __('Berhasil menambahkan role'));
+
+            $this->role->refresh();
+            $this->reset('users');
         });
     }
 
     public function mount(Role $role)
     {
-
         $this->role = $role;
     }
 
+    #[On('success')]
     public function render()
     {
         $dataDaftar = User::whereNotIn('id', $this->role->users->pluck('id'))->get();

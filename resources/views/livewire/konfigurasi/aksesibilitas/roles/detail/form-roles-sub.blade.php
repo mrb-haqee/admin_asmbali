@@ -24,11 +24,12 @@
                         data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-max-height="auto"
                         data-kt-scroll-dependencies="#modal_add_user_header"
                         data-kt-scroll-wrappers="#modal_add_user_scroll" data-kt-scroll-offset="300px">
-
+                        {{ dump($dataDaftar->count()) }}
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Users</label>
                             <div wire:ignore>
-                                <select id="users" class="form-select form-control-solid mb-3 mb-lg-0" multiple
+                                <select id="users" name="users[]"
+                                    class="form-select form-control-solid mb-3 mb-lg-0" multiple
                                     wire:model.defer="users" data-select="users" data-control="select2"
                                     data-placeholder="Select an option" data-allow-clear="true" data-hide-search="true">
                                     @foreach ($dataDaftar as $user)
@@ -68,26 +69,20 @@
 
 @push('scripts')
     <script data-navigate-once>
-        (function() {
-
-            $(document).ready(function() {
-                $('[data-control="select2"]').off('change').on('change', function() {
-                    var users = $(this).val();
-                    Livewire.dispatch('aksesibilitas.roles.detail.form-roles-sub.select2multiple', [
-                        users
-                    ])
-                });
-
-                Livewire.on('success', function() {
-                    $('#modal_add_user').modal('hide');
-                })
-
-
-                Livewire.hook("morphed", () => {
-                    KTMenu.createInstances();
-                })
+        $(document).ready(function() {
+            $('#modal_add_user_form [data-control="select2"]').off('change').on('change', function() {
+                var users = $(this).val();
+                @this.set('users', users);
             });
 
-        })();
+            Livewire.on('success', (message) => {
+                $(this).find('option:selected').remove();
+            });
+
+            Livewire.hook('morph', () => {
+                KTMenu.createInstances();
+            })
+
+        });
     </script>
 @endpush
