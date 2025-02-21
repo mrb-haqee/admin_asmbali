@@ -77,7 +77,7 @@
     @stack('scripts')
     <!--end::Javascript-->
 
-    <script>
+    <script data-navigate-once>
         document.addEventListener('livewire:init', () => {
             // Toastr success and error messages
             Livewire.on('success', (message) => {
@@ -106,9 +106,48 @@
                     }
                 });
             });
+            // SweetAlert confirmation
+            Livewire.on('swal-confirm', ([id, listener, more]) => {
+
+                let [title, message, icon, confirmButtonText] = [
+                    more?.title || 'Apakah Anda yakin?',
+                    more?.text || 'Data yang dihapus tidak dapat dikembalikan!',
+                    more?.icon || 'warning',
+                    more?.confirmButtonText || 'Ok, got it!'
+                ];
+
+                Swal.fire({
+                    title: title,
+                    text: message,
+                    icon: icon,
+                    showCancelButton: true,
+                    cancelButtonText: "Batal",
+                    confirmButtonText: confirmButtonText,
+                    buttonsStyling: false,
+                    customClass: {
+                        cancelButton: "btn btn-secondary",
+                        confirmButton: "btn btn-danger",
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        Livewire.dispatch(listener, [id, 'delete']);
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        Swal.fire({
+                            title: "Dibatalkan",
+                            icon: "success",
+                            timer: 2000,
+                            confirmButtonText: "OK",
+                            customClass: {
+                                confirmButton: "btn btn-secondary"
+                            }
+                        });
+                    }
+                });
+            });
+
         });
     </script>
-
 
     @livewireScripts
 </body>
