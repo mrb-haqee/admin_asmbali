@@ -15,9 +15,9 @@
                         </h2>
                     </div>
                     <div class="card-toolbar">
-                        <a href="#" class="btn btn-icon btn-sm btn-active-color-primary delete-role"
-                            data-bs-toggle="tooltip" title="Delete Role" data-bs-dismiss="click"
-                            data-data-id="{{ $role->id }}" data-kt-action="delete_row">
+                        <a wire:click="$dispatch('aksesibilitas.roles.delete', { id: @js($role->id), flag: 'confirm' })"
+                            href="#" class="btn btn-icon btn-sm btn-active-color-primary delete-role"
+                            data-bs-toggle="tooltip" title="Delete Role" data-bs-trigger="hover">
                             {!! getIcon('cross', 'fs-1 text-danger bg-light') !!}
                         </a>
                     </div>
@@ -57,12 +57,11 @@
                     <a href="{{ route('konfigurasi.aksesibilitas.roles.show', $role) }}"
                         class="btn btn-light btn-active-primary my-1 me-2" wire:navigate>View Role</a>
 
-                    <button wire:click="$dispatch('aksesibilitas.roles.show', { id: @js($role->id) })"
+                    <button wire:click="$dispatch('aksesibilitas.roles.from', { id: @js($role->id) })"
                         class="btn btn-light btn-active-light-primary my-1" data-bs-toggle="modal"
                         data-bs-target="#modal_role">
                         Edit Role
                     </button>
-
 
                     {{-- <button type="button" class="btn btn-light btn-active-light-primary my-1"
                         data-role-name="{{ $role->name }}" data-bs-toggle="modal" data-bs-target="#modal_role"
@@ -83,8 +82,7 @@
             <!--begin::Card body-->
             <div class="card-body d-flex flex-center">
                 <!--begin::Button-->
-                <button wire:click="$dispatch('aksesibilitas.roles.show', { id: null })"
-                    class="btn btn-clear d-flex flex-column flex-center" data-bs-toggle="modal"
+                <button class="btn btn-clear d-flex flex-column flex-center" data-bs-toggle="modal"
                     data-bs-target="#modal_role">
                     <!--begin::Illustration-->
                     <img src="{{ image('illustrations/sketchy-1/4.png') }}" alt=""
@@ -102,54 +100,3 @@
     </div>
     <!--begin::Add new card-->
 </div>
-@push('scripts')
-    <script data-navigate-once>
-        $(document).ready(function() {
-            
-            $(document).on('click', '[data-kt-action="delete_row"]', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: "Apakah Anda yakin?",
-                    text: "Data yang dihapus tidak dapat dikembalikan!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    cancelButtonText: "Batal",
-                    confirmButtonText: "Ya, hapus!",
-                    buttonsStyling: false,
-                    customClass: {
-                        cancelButton: "btn btn-secondary",
-                        confirmButton: "btn btn-danger",
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        let id = $(this).data('data-id');
-
-                        Livewire.dispatch('aksesibilitas.roles.delete', [id]);
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        Swal.fire({
-                            title: "Dibatalkan",
-                            text: "Data Anda aman dan tidak dihapus.",
-                            icon: "success",
-                            timer: 2000,
-                            confirmButtonText: "OK",
-                            customClass: {
-                                confirmButton: "btn btn-secondary"
-                            }
-                        });
-                    }
-                });
-            });
-
-
-            // $(document).on('click', '[data-kt-action="update_row"]', function() {
-            //     let roleName = $(this).data('role-name');
-            //     Livewire.dispatch('aksesibilitas.roles.show', [roleName]);
-            // });
-
-            Livewire.on('success', function() {
-                $('.modal').modal('hide');
-            });
-
-        });
-    </script>
-@endpush

@@ -20,10 +20,10 @@
                 <!--begin::Form-->
                 <form id="modal_role_form" class="form" action="#" wire:submit="submit">
                     <!--begin::Scroll-->
-                    <div class="d-flex flex-column scroll-y me-n7 pe-7" id="modal_role_scroll"
-                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
-                        data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#modal_role_header"
-                        data-kt-scroll-wrappers="#modal_role_scroll" data-kt-scroll-offset="300px">
+                    <div class="d-flex flex-column scroll-y me-n7 pe-7" id="modal_role_scroll" data-kt-scroll="true"
+                        data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
+                        data-kt-scroll-dependencies="#modal_role_header" data-kt-scroll-wrappers="#modal_role_scroll"
+                        data-kt-scroll-offset="300px">
                         <!--begin::Input group-->
                         <div class="fv-row mb-10">
                             <!--begin::Label-->

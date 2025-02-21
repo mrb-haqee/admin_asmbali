@@ -8,8 +8,6 @@ use Spatie\Permission\Models\Role;
 
 class DaftarRoles extends Component
 {
-
-
     public $listeners = ['success' => '$refresh', 'error' => '$refresh', 'swal' => '$refresh'];
 
     #[On('success', 'error', 'swal')]

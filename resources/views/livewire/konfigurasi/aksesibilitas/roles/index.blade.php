@@ -17,4 +17,14 @@
     @livewire('konfigurasi.aksesibilitas.roles.form-roles')
     <!--end::Modal-->
 
+    @push('scripts')
+        <script data-navigate-once>
+            $(document).ready(function() {
+                Livewire.on('success', function() {
+                    $('.modal').modal('hide');
+                });
+            });
+        </script>
+    @endpush
+
 </x-default-layout>
