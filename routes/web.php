@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('user', UserIndex::class)->name('user.index');
         });
 
-        Route::name('aksesibilitas.')->prefix('masterdata')->group(function () {
+        Route::name('aksesibilitas.')->prefix('aksesibilitas')->group(function () {
             Route::get('roles', RolesIndex::class)->name('roles.index');
             Route::get('roles/{role}', RolesSubIndex::class)->name('roles.show');
             // Route::get('roles', MenuIndex::class)->name('menu.index');
