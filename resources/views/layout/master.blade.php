@@ -79,15 +79,19 @@
 
     <script data-navigate-once>
         document.addEventListener('livewire:init', () => {
-            // Toastr success and error messages
-            Livewire.on('success', (message) => {
+            // ================= Toastr =================
+            Livewire.on('success', ([message, isCLose = true]) => {
                 toastr.success(message);
+                if (isCLose) {
+                    $('.modal').modal('hide');
+                    $('.modal').find('form').trigger('reset');
+                }
             });
             Livewire.on('error', (message) => {
                 toastr.error(message);
             });
 
-            // SweetAlert notifications
+            // ================= SweetAlert =================
             Livewire.on('swal', (message, icon, confirmButtonText) => {
                 if (typeof icon === 'undefined') {
                     icon = 'success';
@@ -106,9 +110,8 @@
                     }
                 });
             });
-            // SweetAlert confirmation
-            Livewire.on('swal-confirm', ([id, listener, more]) => {
 
+            Livewire.on('swal-confirm', ([id, listener, more]) => {
                 let [title, message, icon, confirmButtonText] = [
                     more?.title || 'Apakah Anda yakin?',
                     more?.text || 'Data yang dihapus tidak dapat dikembalikan!',
@@ -145,6 +148,9 @@
                     }
                 });
             });
+
+            // ================= Select2 =================
+
 
         });
     </script>
