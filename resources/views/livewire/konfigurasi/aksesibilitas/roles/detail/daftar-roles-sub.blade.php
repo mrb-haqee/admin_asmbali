@@ -17,7 +17,7 @@
             <div class="card-body pt-0">
                 <!--begin::Permissions-->
                 <div class="d-flex flex-column text-gray-600">
-                    @foreach ($role->permissions->shuffle()->take(5) as $permission)
+                    @foreach ($role->permissions->take(5) as $permission)
                         <div class="d-flex align-items-center py-2">
                             <span class="bullet bg-primary me-3"></span>
                             {{ ucfirst($permission->name) }}
@@ -70,12 +70,19 @@
                     <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
 
                         <!--begin::Add customer-->
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#modal_add_user"
-                            wire:click="$dispatch('gaspokoe', @js($role->id))">
-                            {!! getIcon('plus-square', 'fs-2 ', 'outline', 'i') !!}
-                            User
-                        </button>
+                        @if (empty($checked_data))
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modal_add_user">
+                                {!! getIcon('plus-square', 'fs-2 ', 'outline', 'i') !!}
+                                User
+                            </button>
+                        @else
+                            <button type="button" class="btn btn-danger btn-sm"
+                                wire:click="deleteRoleChecked(null, 'confirm')">
+                                {!! getIcon('trash', 'fs-2 ', 'outline', 'i') !!}
+                                Delete
+                            </button>
+                        @endif
                         <!--end::Add customer-->
                     </div>
                     <!--end::Toolbar-->
@@ -91,6 +98,7 @@
                     <table id="table_menu" class="table table-row-bordered gy-5 gs-7">
                         <thead>
                             <tr class="fw-bold fs-6 text-gray-800">
+                                <th style="width: 1%;" class="d-none d-sm-table-cell"></th>
                                 <th style="width: 20%;">User</th>
                                 <th style="width: 20%;">Role</th>
                                 <th style="width: 20%;">last_login_at </th>
@@ -100,10 +108,19 @@
                         <tbody>
                             @foreach ($dataDaftar as $i => $user)
                                 <tr wire:key='{{ $user->id }}'>
-                                    <td>
+                                    <td class="align-middle d-none d-sm-table-cell ">
+                                        <!--begin::Checkbox-->
+                                        <label class="form-check form-check-sm form-check-custom form-check-solid me-9">
+                                            <input class="form-check-input" type="checkbox"
+                                                wire:change="toggleChecked({{ $user->id }})" />
+                                        </label>
+                                        <!--end::Checkbox-->
+                                    </td>
+                                    <td class="align-middle">
                                         <div class="d-flex justify-content-start align-items-center">
                                             <!--begin:: Avatar -->
-                                            <div class="symbol symbol-circle symbol-50px overflow-hidden me-3">
+                                            <div
+                                                class="symbol symbol-circle symbol-50px overflow-hidden me-3 d-none d-sm-block">
                                                 <a href="{{ route('user-management.users.show', $user) }}"
                                                     wire:navigate>
                                                     @if ($user->profile_photo_url)
@@ -126,40 +143,44 @@
                                                     wire:navigate>
                                                     {{ $user->name }}
                                                 </a>
-                                                <span class="text-muted">{{ $user->email }}</span>
+                                                <span class="text-muted d-none d-sm-block">{{ $user->email }}</span>
                                             </div>
                                             <!--begin::User details-->
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         <div class="badge badge-light fw-bold">
                                             {{ $user->roles->first()?->name }}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td class="align-middle">
                                         <div class="badge badge-light fw-bold">
                                             {{ empty($user->last_login_at) ? $user->updated_at->diffForHumans() : $user->last_login_at->diffForHumans() }}
                                         </div>
                                     </td>
 
-                                    <td>
-                                        <div>
-                                            <a href="#"
-                                                class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
-                                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                                Actions
-                                                <i class="ki-duotone ki-down fs-5 ms-1"></i>
-                                            </a>
-                                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
-                                                data-kt-menu="true">
-                                                <!--begin::Menu item-->
-                                                <div class="menu-item px-3">
-                                                    <a href="#" class="menu-link px-3"
-                                                        wire:click="$dispatch('aksesibilitas.roles.detail.delete', @js(['id' => $user->id, 'flag' => 'confirm']))">
-                                                        <i class="fas fa-trash me-3"></i>Delete
-                                                    </a>
-                                                </div>
-                                                <!--end::Menu item-->
+                                    <td class="align-middle">
+                                        {{-- DELETE --}}
+                                        <button
+                                            wire:click="$dispatch('aksesibilitas.roles.detail.delete', @js(['id' => $user->id, 'flag' => 'confirm']))"
+                                            class="btn btn-icon btn-color-gray-500 btn-active-color-danger w-35px h-35px d-sm-none">
+                                            {!! getIcon('trash', 'fs-3', 'outline', 'i') !!}
+                                        </button>
+                                        <button
+                                            class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm d-none d-sm-block"
+                                            data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                            Actions
+                                            <i class="ki-duotone ki-down fs-5 ms-1"></i>
+                                        </button>
+                                        <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
+                                            data-kt-menu="true">
+                                            <!--begin::Menu item-->
+                                            <div class="menu-item px-3">
+                                                <butto
+                                                    wire:click="$dispatch('aksesibilitas.roles.detail.delete', @js(['id' => $user->id, 'flag' => 'confirm']))"
+                                                    class="menu-link px-3">
+                                                    <i class="fas fa-trash me-3"></i>Delete
+                                                </butto>
                                             </div>
                                         </div>
                                     </td>
@@ -168,7 +189,7 @@
                         </tbody>
                     </table>
 
-                    {{-- {{ $dataDaftar->links() }} --}}
+                    {{ $dataDaftar->links() }}
                 </div>
                 <!--end::Table-->
             </div>
@@ -177,5 +198,7 @@
         <!--end::Card-->
     </div>
     <!--end::Content-->
+
+
 </div>
 <!--end::Layout-->

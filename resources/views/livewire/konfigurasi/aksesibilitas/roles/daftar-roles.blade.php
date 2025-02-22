@@ -82,7 +82,8 @@
             <!--begin::Card body-->
             <div class="card-body d-flex flex-center">
                 <!--begin::Button-->
-                <button class="btn btn-clear d-flex flex-column flex-center" data-bs-toggle="modal"
+                <button wire:click="$dispatch('aksesibilitas.roles.from', { id: @js(null) })"
+                    class="btn btn-clear d-flex flex-column flex-center" data-bs-toggle="modal"
                     data-bs-target="#modal_role">
                     <!--begin::Illustration-->
                     <img src="{{ image('illustrations/sketchy-1/4.png') }}" alt=""

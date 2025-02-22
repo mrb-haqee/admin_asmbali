@@ -26,7 +26,7 @@ class FormRoles extends Component
     {
         $role = Role::find($id);
         if (!$role) {
-            $this->dispatch('error', 'Role tidak ditemukan.');
+            $this->reset('role_id', 'name', 'checked_permissions', 'check_all');
             return;
         }
 

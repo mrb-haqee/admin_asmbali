@@ -12,6 +12,13 @@ use Spatie\Permission\Models\Role;
 
 class DaftarRolesSub extends Component
 {
+    // ==== Livewire Datatables ====
+    use WithPagination;
+    public $paginationTheme = 'bootstrap';
+    public $perPage = 5;
+    public $checked_data = [];
+
+    // ==== Livewire Datatables ====
 
     public Role $role;
 
@@ -48,6 +55,37 @@ class DaftarRolesSub extends Component
         }
     }
 
+    #[On('aksesibilitas.roles.detail.delete-checked')]
+    public function deleteRoleChecked($data, $flag)
+    {
+        if (in_array(Auth::id(), $this->checked_data)) {
+            $this->dispatch('error', 'Tidak bisa menghapus Akun saat ini.');
+            return;
+        }
+
+        if ($flag === 'confirm') {
+            $this->dispatch('swal-confirm', $this->checked_data, 'aksesibilitas.roles.detail.delete-checked', ['text' => "Data User roles yang dihapus tidak dapat dikembalikan"]);
+            return;
+        }
+
+        foreach ($this->checked_data as $id) {
+            $user = User::find($id);
+            $user->roles()->detach();
+        }
+
+        $this->dispatch('swal', 'Role has been deleted successfully');
+        $this->checked_data = [];
+    }
+
+    public function toggleChecked($id)
+    {
+        if (in_array($id, $this->checked_data)) {
+            $this->checked_data = array_diff($this->checked_data, [$id]);
+        } else {
+            $this->checked_data[] = $id;
+        }
+    }
+
     public function mount(Role $role)
     {
         $this->role = $role;
@@ -55,7 +93,7 @@ class DaftarRolesSub extends Component
 
     public function render()
     {
-        $dataDaftar = User::whereIn('id', $this->role->users->pluck('id'))->get();
+        $dataDaftar = User::whereIn('id', $this->role->users->pluck('id'))->paginate($this->perPage);
 
         return view('livewire.konfigurasi.aksesibilitas.roles.detail.daftar-roles-sub', compact('dataDaftar'));
     }

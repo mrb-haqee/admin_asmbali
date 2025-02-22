@@ -25,21 +25,24 @@
                         data-kt-scroll-dependencies="#modal_add_user_header"
                         data-kt-scroll-wrappers="#modal_add_user_scroll" data-kt-scroll-offset="300px">
                         {{ dump($dataDaftar->count()) }}
-                        <div class="fv-row mb-7">
+                        <div wire:ignore class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Users</label>
-                            <div wire:ignore>
-                                <select id="users" name="users[]"
-                                    class="form-select form-control-solid mb-3 mb-lg-0" multiple
-                                    wire:model.defer="users" data-select="users" data-control="select2"
-                                    data-placeholder="Select an option" data-allow-clear="true" data-hide-search="true">
-                                    @foreach ($dataDaftar as $user)
+                            {{-- <select id="users" name="users" class="form-select form-control-solid mb-3 mb-lg-0"
+                                multiple wire:model.defer="users" data-control="select2"
+                                data-placeholder="Select an option" data-allow-clear="true" data-hide-search="true">
+                                @foreach ($dataDaftar as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select> --}}
+                            <select id="users" name="users" class="form-select form-control-solid mb-3 mb-lg-0"
+                                multiple data-control="select2" data-placeholder="Select an option"
+                                data-allow-clear="true" data-hide-search="true">
+                                @foreach ($dataDaftar as $user)
+                                    @if (!in_array($user->id, $users))
                                         <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @error('users')
-                                <span class="text-danger" wire:dirty.remove>{{ $message }}</span>
-                            @enderror
+                                    @endif
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="text-center pt-15">
@@ -70,13 +73,16 @@
 @push('scripts')
     <script data-navigate-once>
         $(document).ready(function() {
+            var dataSelected;
             $('#modal_add_user_form [data-control="select2"]').off('change').on('change', function() {
                 var users = $(this).val();
                 @this.set('users', users);
+
+                dataSelected = $(this).find('option:selected');
             });
 
-            Livewire.on('success', (message) => {
-                $(this).find('option:selected').remove();
+            Livewire.on('reload-select-2-multiple', () => {
+                (this).find('option:selected').remove();
             });
 
             Livewire.hook('morph', () => {

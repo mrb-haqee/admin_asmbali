@@ -25,6 +25,11 @@ class FormRolesSub extends Component
 
             $users = User::whereIn('id', $this->users)->get();
 
+            if (!$users->count()) {
+                $this->dispatch('error', __('Tidak ada user yang dipilih'));
+                return;
+            }
+
             foreach ($users as $user) {
                 $user->assignRole($this->role);
             }
@@ -33,6 +38,8 @@ class FormRolesSub extends Component
 
             $this->role->refresh();
             $this->reset('users');
+
+            $this->dispatch('reload-select-2-multiple');
         });
     }
 
@@ -44,7 +51,7 @@ class FormRolesSub extends Component
     #[On('success')]
     public function render()
     {
-        $dataDaftar = User::whereNotIn('id', $this->role->users->pluck('id'))->get();
+        $dataDaftar = User::doesntHave('roles')->get();
         return view('livewire.konfigurasi.aksesibilitas.roles.detail.form-roles-sub', compact('dataDaftar'));
     }
 }

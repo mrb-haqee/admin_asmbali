@@ -20,16 +20,6 @@
         @livewire('konfigurasi.aksesibilitas.roles.detail.form-roles-sub', compact('role'))
         <!--end::Modal-->
 
-        @push('scripts')
-            <script data-navigate-once>
-                $(document).ready(function() {
-                    Livewire.on('success', function() {
-                        $('.modal').modal('hide');
-                    });
-                });
-            </script>
-        @endpush
-
     </x-default-layout>
 
 </div>
