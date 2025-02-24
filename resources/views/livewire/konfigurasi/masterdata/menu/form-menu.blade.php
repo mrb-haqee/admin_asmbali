@@ -6,7 +6,7 @@
             <!--begin::Modal header-->
             <div class="modal-header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Tambah Menu</h2>
+                <h2 class="fw-bold">From Menu</h2>
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal" aria-label="Close">
@@ -20,8 +20,6 @@
 
                 <form id="modal_menu_form" class="form" action="#" wire:submit.prevent="submit"
                     enctype="multipart/form-data">
-                    <input type="hidden" wire:model.defer="menu_id" name="menu_id" />
-                    <input type="hidden" wire:model.defer="flag" name="flag" />
                     <div class="d-flex flex-column scroll-y px-5 px-lg-10" id="modal_menu_scroll" data-kt-scroll="true"
                         data-kt-scroll-activate="true" data-kt-scroll-max-height="auto"
                         data-kt-scroll-dependencies="#modal_menu_header" data-kt-scroll-wrappers="#modal_menu_scroll"
@@ -41,24 +39,46 @@
                                 </select>
                             </div>
                             @error('group')
-                                <span class="text-danger" wire:dirty.remove>{{ $message }}</span>
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+
                         <div class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Name</label>
                             <input type="text" wire:model.defer="name" name="name"
                                 class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Full name" />
                             @error('name')
-                                <span class="text-danger" wire:dirty.remove>{{ $message }}</span>
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="form-check form-switch form-check-custom form-check-solid">
-                            <input class="form-check-input" type="checkbox" value="" id="option"
-                                wire:model.defer="option" name="option" />
-                            <label class="form-check-label" for="option">
-                                Sub Menu
-                            </label>
+
+                        <div class="fv-row mb-7">
+                            <label class=" fw-semibold fs-6 mb-2">Sub Menu</label>
+                            <div class="form-check form-switch form-check-custom form-check-solid">
+                                <input class="form-check-input" type="checkbox" id="option" wire:model.live="option"
+                                    name="option" />
+                            </div>
                         </div>
+
+                        @if (!$option)
+                            <div class="fv-row mb-7">
+                                <label class="fw-semibold fs-6 mb-2">Permission</label>
+                                <div class="d-flex flex-wrap">
+                                    @foreach ($data_permission as $permission)
+                                        <div
+                                            class="form-check form-check-custom form-check-solid form-check-sm mb-2 me-3">
+                                            <input class="form-check-input" type="checkbox"
+                                                wire:click="togglePermission('{{ $permission }}')"
+                                                @if (in_array($permission, $checked_permission)) checked @endif />
+                                            <label class="form-check-label">
+                                                {{ ucwords($permission) }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
                     </div>
                     <div class="text-center pt-15">
                         <button type="reset" class="btn btn-secondary me-3" data-bs-dismiss="modal" aria-label="Close"
@@ -85,73 +105,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-
-            var PageMenu = function() {
-                if (@this === undefined) {
-                    return;
-                }
-
-
-                $("#modal_menu [data-control='select2']").select2().on('change', function() {
-                    @this.set($(this).data('select'), $(this).val())
-                });
-
-                $("#modal_menu").on('hidden.bs.modal', function() {
-                    if (@this.get('flag') === 'update') {
-                        @this.call('resetFlag');
-                    }
-                });
-
-                $('#table_menu [data-kt-action="update_row"]').each(function() {
-                    $(this).on('click', function() {
-                        @this.call('update', $(this).data('data-id'));
-                    });
-                });
-
-                $('#table_menu [data-kt-action="delete_row"]').each(function() {
-                    $(this).on('click', function(e) {
-                        e.preventDefault();
-                        Swal.fire({
-                            title: "Apakah Anda yakin?",
-                            text: "Data yang dihapus tidak dapat dikembalikan!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            cancelButtonText: "Batal",
-                            confirmButtonText: "Ya, hapus!",
-                            buttonsStyling: false,
-                            customClass: {
-                                cancelButton: "btn btn-secondary",
-                                confirmButton: "btn btn-danger",
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                @this.call('delete', [$(this).data('data-id')]);
-                            } else if (result.dismiss === Swal.DismissReason
-                                .cancel) {
-                                Swal.fire({
-                                    title: "Dibatalkan",
-                                    text: "Data Anda aman dan tidak dihapus.",
-                                    icon: "success",
-                                    timer: 2000,
-                                    confirmButtonText: "OK",
-                                    customClass: {
-                                        confirmButton: "btn btn-secondary"
-                                    }
-                                });
-                            }
-                        });
-                    });
-                });
-
-                KTMenu.createInstances();
-            };
-
-            PageMenu();
-
-            Livewire.hook("morphed", () => {
-                PageMenu();
-            })
-
+            $(document).on('change', "#modal_menu [data-control='select2']", function() {
+                @this.set('group', $(this).val())
+            });
         });
     </script>
 @endpush

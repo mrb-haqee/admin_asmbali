@@ -5,24 +5,35 @@ namespace App\Livewire\Konfigurasi\Masterdata\Menu;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class FormMenu extends Component
 {
 
-    public $user_id;
+    public $id,  $option, $flag = 'tambah';
 
-    public $menu_id, $group, $name, $option, $flag = 'tambah';
+    #[Rule('required|string')]
+    public $name;
 
-    public function submit(): void
+    #[Rule('required|string')]
+    public $group;
+    public $data_permission = ['view', 'read', 'creat', 'write', 'update', 'delete', 'print'];
+    public $checked_permission = ['view'];
+
+    public function togglePermission($value)
     {
-        $this->validate([
-            'group' => 'required|string',
-            'name' => 'required|string',
-        ], [
-            'group.required' => 'Group wajib diisi.',
-            'name.required' => 'Nama wajib diisi.',
-        ]);
+        if (in_array($value, $this->checked_permission)) {
+            $this->checked_permission = array_diff($this->checked_permission, [$value]);
+        } else {
+            $this->checked_permission[] = $value;
+        }
+    }
+
+    public function submit()
+    {
+        $this->validate();
 
         DB::transaction(function () {
 
@@ -31,63 +42,68 @@ class FormMenu extends Component
                 'name' => $this->name,
                 'option' => $this->option ? '__YES__' : '__NO__',
                 'index_sort' => Menu::where('group', $this->group)->count(),
+                'user_id' => Auth::id()
             ];
 
-            $menu = Menu::find($this->menu_id) ?? Menu::create($data);
+            $menu = Menu::find($this->id) ?? Menu::create($data);
 
             if ($this->flag === 'update') {
                 foreach ($data as $k => $v) {
+                    if ($k === 'user_id') continue;
                     $menu->$k = $v;
                 }
-                $menu->user_id_update = $this->user_id;
+                $menu->user_id_update = Auth::id();
                 $menu->save();
-            } else {
             }
 
-            if ($this->flag === 'update') {
-                $this->dispatch('success', __('Menu updated'));
-            } else {
-                $this->dispatch('success', __('Menu added'));
-            }
-            $this->dispatch('proses-selesai');
+            $this->dispatch('success', $this->flag === 'update' ? __('Menu updated') : __('Menu added'));
             $this->reset();
         });
     }
 
-    public function delete($id)
+    #[On('konfigurasi.masterdata.menu.delete')]
+    public function delete($id, $flag)
     {
-        Menu::destroy($id);
-        $this->dispatch('swal', __('Menu berhasil dihapus'), 'success');
-        $this->dispatch('proses-selesai');
+
+        $menu = Menu::find($id);
+        if (!$menu) {
+            $this->dispatch('error', 'Permission tidak ditemukan.');
+            return;
+        }
+
+        if ($flag === 'confirm') {
+            $this->dispatch('swal-confirm', $id, 'konfigurasi.masterdata.menu.delete', ['text' => "Data Menu \"{$menu->name}\" yang dihapus tidak dapat dikembalikan"]);
+            return;
+        }
+
+        $menu->delete();
+        $this->dispatch('success', "Menu \"{$menu->name}\" has been deleted successfully");
     }
 
-    public function update($id): void
+    #[On('konfigurasi.masterdata.menu.show')]
+    public function showModal($id): void
     {
+        if (is_null($id)) {
+            $this->reset();
+            return;
+        };
+
         $this->flag = 'update';
         $menu = Menu::find($id);
-
-        $this->menu_id = $menu->id;
+        $this->id = $menu->id;
         $this->group = $menu->group;
         $this->name = $menu->name;
         $this->option = $menu->option === '__YES__' ? true : false;
-
-        $this->dispatch('select2');
-    }
-
-    public function resetFlag(): void
-    {
-        $this->flag === 'update' && $this->reset();
-    }
-    public function hydrate(): void
-    {
-        $this->resetErrorBag();
-        $this->resetValidation();
-
-        $this->user_id = Auth::user()->id;
     }
 
     public function render()
     {
         return view('livewire.konfigurasi.masterdata.menu.form-menu');
+    }
+
+    public function updated(): void
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
     }
 }

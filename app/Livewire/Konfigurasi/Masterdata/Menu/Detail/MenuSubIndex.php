@@ -8,16 +8,16 @@ use Livewire\Component;
 class MenuSubIndex extends Component
 {
 
-    public $id, $menu;
+    public $id;
 
-    public function mount($id)
+    public function mount(Menu $menu)
     {
-        $this->id = $id;
-        $this->menu = Menu::find($id);
+        $this->id = $menu->id;
     }
 
     public function render()
     {
-        return view('livewire.konfigurasi.masterdata.menu.detail.index');
+        $menu  = Menu::find($this->id);
+        return view('livewire.konfigurasi.masterdata.menu.detail.index', compact('menu'));
     }
 }
