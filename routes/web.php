@@ -5,6 +5,7 @@ use App\Http\Controllers\Apps\RoleManagementController;
 use App\Http\Controllers\Apps\UserManagementController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\DashboardController;
+use App\Livewire\Konfigurasi\Aksesibilitas\Permission\PermissionIndex;
 use App\Livewire\Konfigurasi\Aksesibilitas\Roles\Detail\RolesSubIndex;
 use App\Livewire\Konfigurasi\Aksesibilitas\Roles\RolesIndex;
 use App\Livewire\Konfigurasi\Masterdata\Menu\Detail\MenuSubIndex;
@@ -48,8 +49,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::name('aksesibilitas.')->prefix('aksesibilitas')->group(function () {
             Route::get('roles', RolesIndex::class)->name('roles.index');
             Route::get('roles/{role}', RolesSubIndex::class)->name('roles.show');
-            // Route::get('roles', MenuIndex::class)->name('menu.index');
 
+            Route::get('permission', PermissionIndex::class)->name('permission.index');
         });
     });
     // Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
