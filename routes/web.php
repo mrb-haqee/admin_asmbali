@@ -32,16 +32,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::name('user-management.')->prefix('user-management')->group(function () {
-        Route::resource('users', UserManagementController::class)->names('users');
-        Route::resource('roles', RoleManagementController::class)->names('roles');
-        Route::resource('permissions', PermissionManagementController::class)->names('permissions');
-    });
-
     Route::name('konfigurasi.')->prefix('konfigurasi')->group(function () {
         Route::name('masterdata.')->prefix('masterdata')->group(function () {
             Route::get('menu', MenuIndex::class)->name('menu.index');
-            Route::get('menu/{id}', MenuSubIndex::class)->name('menu.show');
+            Route::get('menu/{menu}', MenuSubIndex::class)->name('menu.show');
 
             Route::get('user', UserIndex::class)->name('user.index');
         });
