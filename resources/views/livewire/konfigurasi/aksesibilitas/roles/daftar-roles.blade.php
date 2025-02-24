@@ -55,7 +55,7 @@
                 <!--begin::Card footer-->
                 <div class="card-footer flex-wrap pt-0">
                     <a href="{{ route('konfigurasi.aksesibilitas.roles.show', $role) }}"
-                        class="btn btn-light btn-active-primary my-1 me-2" wire:navigate>View Role</a>
+                        class="btn btn-light btn-active-primary my-1 me-2">View Role</a>
 
                     <button wire:click="$dispatch('aksesibilitas.roles.from', { id: @js($role->id) })"
                         class="btn btn-light btn-active-light-primary my-1" data-bs-toggle="modal"
