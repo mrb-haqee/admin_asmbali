@@ -24,23 +24,13 @@
                         data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-max-height="auto"
                         data-kt-scroll-dependencies="#modal_add_user_header"
                         data-kt-scroll-wrappers="#modal_add_user_scroll" data-kt-scroll-offset="300px">
-                        {{ dump($dataDaftar->count()) }}
                         <div wire:ignore class="fv-row mb-7">
                             <label class="required fw-semibold fs-6 mb-2">Users</label>
-                            {{-- <select id="users" name="users" class="form-select form-control-solid mb-3 mb-lg-0"
+                            <select id="users" name="users" class="form-select form-control-solid mb-3 mb-lg-0"
                                 multiple wire:model.defer="users" data-control="select2"
-                                data-placeholder="Select an option" data-allow-clear="true" data-hide-search="true">
+                                data-placeholder="Select an option" data-allow-clear="true">
                                 @foreach ($dataDaftar as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
-                            </select> --}}
-                            <select id="users" name="users" class="form-select form-control-solid mb-3 mb-lg-0"
-                                multiple data-control="select2" data-placeholder="Select an option"
-                                data-allow-clear="true" data-hide-search="true">
-                                @foreach ($dataDaftar as $user)
-                                    @if (!in_array($user->id, $users))
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -73,16 +63,16 @@
 @push('scripts')
     <script data-navigate-once>
         $(document).ready(function() {
-            var dataSelected;
+            var _ms;
             $('#modal_add_user_form [data-control="select2"]').off('change').on('change', function() {
                 var users = $(this).val();
                 @this.set('users', users);
 
-                dataSelected = $(this).find('option:selected');
+                _ms = $(this).find('option:selected');
             });
 
             Livewire.on('reload-select-2-multiple', () => {
-                (this).find('option:selected').remove();
+                _ms.remove();
             });
 
             Livewire.hook('morph', () => {
