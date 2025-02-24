@@ -13,15 +13,12 @@ $breadcrumbs = [
     'konfigurasi.masterdata.menu.show' => ['Menu Detail', 'konfigurasi.masterdata.menu.show', 'konfigurasi.masterdata.menu.index', Menu::class],
 
     'konfigurasi.masterdata.user.index' => ['User', 'konfigurasi.masterdata.user.index', 'dashboard'],
+
     'konfigurasi.aksesibilitas.roles.index' => ['Roles', 'konfigurasi.aksesibilitas.roles.index', 'dashboard'],
     'konfigurasi.aksesibilitas.roles.show' => ['Role Detail', 'konfigurasi.aksesibilitas.roles.show', 'konfigurasi.aksesibilitas.roles.index', Role::class],
 
-    // 'user-management.index' => ['User Management', 'user-management.users.index', 'dashboard'],
-    // 'user-management.users.index' => ['Users', 'user-management.users.index', 'user-management.index'],
-    // 'user-management.users.show' => ['User', 'user-management.users.show', 'user-management.users.index', User::class],
-    // 'user-management.roles.index' => ['Roles', 'user-management.roles.index', 'user-management.index'],
-    // 'user-management.roles.show' => ['Role', 'user-management.roles.show', 'user-management.roles.index', Role::class],
-    // 'user-management.permissions.index' => ['Permissions', 'user-management.permissions.index', 'user-management.index'],
+    'konfigurasi.aksesibilitas.permission.index' => ['Permission', 'konfigurasi.aksesibilitas.permission.index', 'dashboard'],
+
 ];
 
 foreach ($breadcrumbs as $name => $breadcrumb) {

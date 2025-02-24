@@ -15,24 +15,46 @@ class RolesPermissionsSeeder extends Seeder
     public function run(): void
     {
         $abilities = [
+            'view',
             'read',
             'create',
             'write',
             'update',
             'delete',
+            'print',
         ];
 
         $permissions_by_role = [
             'administrator' => [
-                'user management',
-                'content management',
-                'financial management',
-                'reporting',
-                'payroll',
-                'disputes management',
-                'api controls',
-                'database management',
-                'repository management',
+                // Group Page
+                'menegament konfigurasi',
+                'manajemen administrasi',
+                'manajemen web_asm',
+                'manajemen web_tpq',
+
+                // Administrasi
+                'administrasi.laporan',
+
+                // Web-asm
+                'web_asm.laporan',
+
+                // Web-tpq
+                'web_tpq.laporan',
+            ],
+            'admin' => [
+                // Group Page
+                'manajemen administrasi',
+                'manajemen web_asm',
+                'manajemen web_tpq',
+
+                // Administrasi
+                'administrasi.laporan',
+
+                // Web-asm
+                'web_asm.laporan',
+
+                // Web-tpq
+                'web_tpq.laporan',
             ],
         ];
 
