@@ -152,6 +152,11 @@
             // ================= Select2 =================
 
 
+
+            // ================= morphed =================
+            Livewire.hook("morphed", () => {
+                KTMenu.createInstances();
+            })
         });
     </script>
 
