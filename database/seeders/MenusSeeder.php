@@ -22,14 +22,17 @@ class MenusSeeder extends Seeder
                 'name' => 'Masterdata',
                 'option' => '__YES__',
                 'index_sort' => '1',
+                'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                 'child' => [
                     [
                         'name' => 'Menu',
                         'index_sort' => '1',
+                        'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                     ],
                     [
                         'name' => 'User',
                         'index_sort' => '2',
+                        'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                     ],
                 ]
             ],
@@ -38,14 +41,17 @@ class MenusSeeder extends Seeder
                 'name' => 'Aksesibilitas',
                 'option' => '__YES__',
                 'index_sort' => '2',
+                'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                 'child' => [
                     [
                         'name' => 'Roles',
                         'index_sort' => '1',
+                        'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                     ],
                     [
                         'name' => 'Permission',
                         'index_sort' => '2',
+                        'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                     ],
                 ]
             ],
@@ -55,7 +61,8 @@ class MenusSeeder extends Seeder
                 'group' => 'administrasi',
                 'name' => 'Laporan',
                 'option' => '__NO__',
-                'index_sort' => '1',
+                'index_sort' => '3',
+                'permissions' => json_encode(['read', 'create', 'update', 'delete']),
             ],
 
             // ! WEB ASM
@@ -63,7 +70,8 @@ class MenusSeeder extends Seeder
                 'group' => 'web_asm',
                 'name' => 'Content',
                 'option' => '__NO__',
-                'index_sort' => '1',
+                'index_sort' => '4',
+                'permissions' => json_encode(['read', 'create', 'update', 'delete']),
             ],
 
             // ! WEB TPQ
@@ -71,7 +79,8 @@ class MenusSeeder extends Seeder
                 'group' => 'web_tpq',
                 'name' => 'Content',
                 'option' => '__NO__',
-                'index_sort' => '1',
+                'index_sort' => '5',
+                'permissions' => json_encode(['read', 'create', 'update', 'delete']),
             ],
         ];
 

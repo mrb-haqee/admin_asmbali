@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('menu_id');
             $table->string('name', 255);
-            $table->json('roles')->default(json_encode([1]));
+            $table->json('permissions');
             $table->unsignedInteger('index_sort');
 
             $table->string('status', 30)->default('__ON__');

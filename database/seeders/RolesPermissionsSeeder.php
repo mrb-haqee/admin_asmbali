@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -14,6 +16,27 @@ class RolesPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
+        $menus = Menu::with(['menuSubs' => function ($menuSubs) {
+            $menuSubs->orderBy('index_sort');
+        }])->orderBy('index_sort')
+            ->get()
+            ->toArray();
+
+        $paths = [];
+
+        foreach ($menus as $menu) {
+            $group = $menu['group'];
+            $parentName = $menu['name'];
+
+            if (empty($menu['menu_subs'])) {
+                $paths[] = "{$group}/{$parentName}";
+            } else {
+                foreach ($menu['menu_subs'] as $subMenu) {
+                    $childName = $subMenu['name'];
+                    $paths[] = Str::lower("{$group}.{$parentName}.{$childName}");
+                }
+            }
+        }
         $abilities = [
             'view',
             'read',
@@ -21,41 +44,10 @@ class RolesPermissionsSeeder extends Seeder
             'write',
             'update',
             'delete',
-            'print',
         ];
 
         $permissions_by_role = [
-            'administrator' => [
-                // Group Page
-                'menegament konfigurasi',
-                'manajemen administrasi',
-                'manajemen web_asm',
-                'manajemen web_tpq',
-
-                // Administrasi
-                'administrasi.laporan',
-
-                // Web-asm
-                'web_asm.laporan',
-
-                // Web-tpq
-                'web_tpq.laporan',
-            ],
-            'admin' => [
-                // Group Page
-                'manajemen administrasi',
-                'manajemen web_asm',
-                'manajemen web_tpq',
-
-                // Administrasi
-                'administrasi.laporan',
-
-                // Web-asm
-                'web_asm.laporan',
-
-                // Web-tpq
-                'web_tpq.laporan',
-            ],
+            'administrator' => $paths
         ];
 
         foreach ($permissions_by_role['administrator'] as $permission) {
