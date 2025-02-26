@@ -14,7 +14,8 @@ class Menu extends Model
         'group',
         'name',
         'option',
-        'index_sort'
+        'index_sort',
+        'permissions',
     ];
 
 

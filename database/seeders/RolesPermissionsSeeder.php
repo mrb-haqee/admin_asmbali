@@ -29,7 +29,9 @@ class RolesPermissionsSeeder extends Seeder
             $parentName = $menu['name'];
 
             if (empty($menu['menu_subs'])) {
-                $paths[] = "{$group}/{$parentName}";
+                if ($menu['option'] === '__NO__') {
+                    $paths[] = Str::lower("{$group}.{$parentName}");
+                }
             } else {
                 foreach ($menu['menu_subs'] as $subMenu) {
                     $childName = $subMenu['name'];
@@ -37,8 +39,8 @@ class RolesPermissionsSeeder extends Seeder
                 }
             }
         }
+
         $abilities = [
-            'view',
             'read',
             'create',
             'write',

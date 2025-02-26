@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UsersSeeder::class,
+            MenusSeeder::class,
             RolesPermissionsSeeder::class,
-            MenusSeeder::class
         ]);
 
         \App\Models\User::factory(20)->create();

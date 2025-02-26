@@ -13,7 +13,8 @@ class MenuSub extends Model
     protected $fillable = [
         'menu_id',
         'name',
-        'index_sort'
+        'index_sort',
+        'permissions',
     ];
 
     public function menu()
