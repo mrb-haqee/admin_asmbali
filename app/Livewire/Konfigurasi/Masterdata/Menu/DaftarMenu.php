@@ -24,7 +24,6 @@ class DaftarMenu extends Component
     {
         $dataDaftar = Menu::query();
 
-        // Filter berdasarkan pencarian nama dan grup
         if (!empty($this->search)) {
             $dataDaftar->where('name', 'like', "%{$this->search}%")
                 ->orWhere('group', 'like', "%{$this->search}%");

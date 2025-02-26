@@ -2,38 +2,47 @@
 
 namespace App\Livewire\Konfigurasi\Masterdata\Menu\Detail;
 
+use App\Models\Menu;
 use App\Models\MenuSub;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class FormMenuSub extends Component
 {
+    public $id, $flag = 'tambah';
 
+    #[Rule('required|string')]
+    public $name;
 
-    public $user_id;
+    #[Rule('required|array')]
+    public array $roles = [1];
 
-    public $id, $name, $flag = 'tambah';
-    public $menu;
+    public $menu_id;
+
+    public function toggleRoles($value)
+    {
+        if (in_array($value, $this->roles)) {
+            $this->roles = array_diff($this->roles, [$value]);
+        } else {
+            $this->roles[] = $value;
+        }
+    }
 
     public function submit(): void
     {
-        $this->validate([
-            'name' => 'required|string',
-        ], [
-            'name.required' => 'Nama wajib diisi.',
-        ]);
-
-        // dd($this->menu->id);
-
-
+        $this->validate();
         DB::transaction(function () {
 
             $data = [
                 'name' => $this->name,
-                'menu_id' => $this->menu->id,
+                'menu_id' => $this->menu_id,
                 'index_sort' => MenuSub::get()->count(),
-                'user_id' => $this->user_id,
+                'roles' => json_encode($this->roles),
+                'user_id' => Auth::id(),
             ];
 
             $menu_sub = MenuSub::find($this->id) ?? MenuSub::create($data);
@@ -43,57 +52,64 @@ class FormMenuSub extends Component
                     if ($k === 'user_id') continue;
                     $menu_sub->$k = $v;
                 }
-                $menu_sub->user_id_update = $this->user_id;
+                $menu_sub->user_id_update = Auth::id();
                 $menu_sub->save();
             }
 
-            if ($this->flag === 'update') {
-                $this->dispatch('success', __('Menu Sub updated'));
-            } else {
-                $this->dispatch('success', __('Menu Sub added'));
-            }
-            $this->dispatch('proses-selesai');
-            $this->reset('name', 'flag', 'id');
+            $this->dispatch('success', "Menu Sub Berhasil di " . $this->flag === 'update' ? "Tambah" :  "Update");
+            $this->reset('name', 'flag', 'id', 'roles');
         });
     }
 
-    public function delete($id)
+    #[On('konfigurasi.masterdata.menu.detail.delete')]
+    public function delete($id, $flag)
     {
-        MenuSub::destroy($id);
-        $this->dispatch('swal', __('Menu Sub removed'), 'success');
-        $this->dispatch('proses-selesai');
+        $menu = MenuSub::find($id);
+        if (!$menu) {
+            $this->dispatch('error', 'Menu Sub tidak ditemukan.');
+            return;
+        }
+
+        if ($flag === 'confirm') {
+            $this->dispatch('swal-confirm', $id, 'konfigurasi.masterdata.menu.detail.delete', ['text' => "Data Menu Sub \"{$menu->name}\" yang dihapus tidak dapat dikembalikan!"]);
+            return;
+        }
+
+        $menu->delete();
+        $this->dispatch('success', "Menu Sub \"{$menu->name}\" berhasil di delete.");
     }
 
-    public function update($id): void
+    #[On('konfigurasi.masterdata.menu.detail.show')]
+    public function showModal($id): void
     {
+        if (is_null($id)) {
+            $this->reset('name', 'flag', 'id', 'roles');
+            return;
+        };
+
+
         $this->flag = 'update';
         $menu_sub = MenuSub::find($id);
 
         $this->id = $menu_sub->id;
         $this->name = $menu_sub->name;
-
-        $this->dispatch('select2');
+        $this->roles = json_decode($menu_sub->roles, true);
     }
 
-    public function resetFlag(): void
+    public function mount(Menu $menu)
     {
-        $this->flag === 'update' && $this->reset('name', 'flag', 'id');
-    }
-    public function hydrate(): void
-    {
-        $this->resetErrorBag();
-        $this->resetValidation();
-
-        $this->user_id = Auth::user()->id;
-    }
-
-    public function mount($menu)
-    {
-        $this->menu = $menu;
+        $this->menu_id = $menu->id;
     }
 
     public function render()
     {
-        return view('livewire.konfigurasi.masterdata.menu.detail.form-menu-sub');
+        $data_roles = Role::all();
+        return view('livewire.konfigurasi.masterdata.menu.detail.form-menu-sub', compact('data_roles'));
+    }
+
+    public function updated(): void
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
     }
 }

@@ -4,49 +4,35 @@ namespace App\Livewire\Konfigurasi\Masterdata\Menu\Detail;
 
 use App\Models\Menu;
 use App\Models\MenuSub;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class DaftarMenuSub extends Component
 {
-
-    public $search = '';
-    public $range;
+    public string $search;
     public $menu;
-    public $dataDaftar;
 
-    public function getDataDaftar()
+    public function mount(Menu $menu)
     {
-        $query = MenuSub::query();
-        $query->where('menu_id', $this->menu->id);
+        $this->menu = $menu;
+    }
 
-        // Filter berdasarkan pencarian nama dan grup
+    #[On('success', 'swal')]
+    public function render()
+    {
+        $dataDaftar = MenuSub::query();
+        $dataDaftar->where('menu_id', $this->menu->id);
+
         if (!empty($this->search)) {
-            $query->where('name', 'like', "%{$this->search}%");
+            $dataDaftar->where('name', 'like', "%{$this->search}%");
         } else {
             if (!empty($this->range) && str_contains($this->range, ' - ')) {
                 [$startDate, $endDate] = explode(' - ', $this->range);
-                // $query->whereBetween('created_at', [$startDate, $endDate]);
+                // $dataDaftar->whereBetween('created_at', [$startDate, $endDate]);
             }
         }
 
-        $this->dataDaftar = $query->get()->toArray();
-    }
-
-    public function updated()
-    {
-        $this->getDataDaftar();
-    }
-
-
-    public function mount($menu)
-    {
-        $this->range = date('Y-m-d', strtotime('-1 month')) . ' - ' . date('Y-m-d');
-        $this->menu = $menu;
-        $this->getDataDaftar();
-    }
-
-    public function render()
-    {
-        return view('livewire.konfigurasi.masterdata.menu.detail.daftar-menu-sub');
+        $dataDaftar = $dataDaftar->get();
+        return view('livewire.konfigurasi.masterdata.menu.detail.daftar-menu-sub', compact('dataDaftar'));
     }
 }

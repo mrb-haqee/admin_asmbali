@@ -7,7 +7,6 @@ use Livewire\Component;
 
 class MenuSubIndex extends Component
 {
-
     public $id;
 
     public function mount(Menu $menu)

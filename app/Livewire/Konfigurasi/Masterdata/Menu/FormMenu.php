@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 class FormMenu extends Component
 {
-
     public $id,  $option, $flag = 'tambah';
 
     #[Rule('required|string')]
@@ -19,15 +19,16 @@ class FormMenu extends Component
 
     #[Rule('required|string')]
     public $group;
-    public $data_permission = ['view', 'read', 'creat', 'write', 'update', 'delete', 'print'];
-    public $checked_permission = ['view'];
 
-    public function togglePermission($value)
+    #[Rule('required|array')]
+    public array $checked_roles = [1];
+
+    public function toggleRoles($value)
     {
-        if (in_array($value, $this->checked_permission)) {
-            $this->checked_permission = array_diff($this->checked_permission, [$value]);
+        if (in_array($value, $this->checked_roles)) {
+            $this->checked_roles = array_diff($this->checked_roles, [$value]);
         } else {
-            $this->checked_permission[] = $value;
+            $this->checked_roles[] = $value;
         }
     }
 
@@ -41,6 +42,7 @@ class FormMenu extends Component
                 'group' => $this->group,
                 'name' => $this->name,
                 'option' => $this->option ? '__YES__' : '__NO__',
+                'roles' => json_encode($this->checked_roles),
                 'index_sort' => Menu::where('group', $this->group)->count(),
                 'user_id' => Auth::id()
             ];
@@ -56,7 +58,7 @@ class FormMenu extends Component
                 $menu->save();
             }
 
-            $this->dispatch('success', $this->flag === 'update' ? __('Menu updated') : __('Menu added'));
+            $this->dispatch('success', "Menu Berhasil di " . $this->flag === 'update' ? "Tambah" :  "Update");
             $this->reset();
         });
     }
@@ -64,20 +66,19 @@ class FormMenu extends Component
     #[On('konfigurasi.masterdata.menu.delete')]
     public function delete($id, $flag)
     {
-
         $menu = Menu::find($id);
         if (!$menu) {
-            $this->dispatch('error', 'Permission tidak ditemukan.');
+            $this->dispatch('error', 'Menu tidak ditemukan.');
             return;
         }
 
         if ($flag === 'confirm') {
-            $this->dispatch('swal-confirm', $id, 'konfigurasi.masterdata.menu.delete', ['text' => "Data Menu \"{$menu->name}\" yang dihapus tidak dapat dikembalikan"]);
+            $this->dispatch('swal-confirm', $id, 'konfigurasi.masterdata.menu.delete', ['text' => "Data Menu \"{$menu->name}\" yang dihapus tidak dapat dikembalikan!"]);
             return;
         }
 
         $menu->delete();
-        $this->dispatch('success', "Menu \"{$menu->name}\" has been deleted successfully");
+        $this->dispatch('success', "Menu \"{$menu->name}\" berhasil di delete.");
     }
 
     #[On('konfigurasi.masterdata.menu.show')]
@@ -88,17 +89,21 @@ class FormMenu extends Component
             return;
         };
 
-        $this->flag = 'update';
         $menu = Menu::find($id);
+
+        $this->flag = 'update';
         $this->id = $menu->id;
         $this->group = $menu->group;
         $this->name = $menu->name;
         $this->option = $menu->option === '__YES__' ? true : false;
+        $this->checked_roles = json_decode($menu->roles, true);
     }
 
+    #[On('success', 'swal')]
     public function render()
     {
-        return view('livewire.konfigurasi.masterdata.menu.form-menu');
+        $roles = Role::all();
+        return view('livewire.konfigurasi.masterdata.menu.form-menu', compact('roles'));
     }
 
     public function updated(): void
