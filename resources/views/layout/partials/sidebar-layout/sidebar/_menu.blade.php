@@ -25,7 +25,7 @@
                     <div class="menu-item">
                         <!--begin:Menu link-->
                         <a class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                            href="{{ route('dashboard') }}" wire:navigate>
+                            href="{{ route('dashboard') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
@@ -53,33 +53,33 @@
                 </div>
                 <!--end:Menu item-->
                 @foreach ($menu as $row)
-                    @php $routeMenu = Str::snake($row['name']) @endphp
+                    @php $routeMenu = Str::snake($row->name) @endphp
 
-                    @if ($row['option'] === '__YES__')
+                    @if ($row->option === '__YES__')
                         <!--begin:Menu item-->
                         <div data-kt-menu-trigger="click"
                             class="menu-item menu-accordion {{ request()->routeIs("$kop.$routeMenu.*") ? 'here show' : '' }}">
                             <!--begin:Menu link-->
                             <span class="menu-link">
                                 <span class="menu-icon">{!! getIcon('abstract-26', 'fs-2') !!}</span>
-                                <span class="menu-title"> {{ $row['name'] }} </span>
+                                <span class="menu-title"> {{ $row->name }} </span>
                                 <span class="menu-arrow"></span>
                             </span>
                             <!--end:Menu link-->
                             <!--begin:Menu sub-->
                             <div class="menu-sub menu-sub-accordion">
-                                @foreach ($row['menu_subs'] as $menuSub)
-                                    @php $routeMenuSub = Str::snake($menuSub['name']); @endphp
+                                @foreach ($row->menuSubs as $menuSub)
+                                    @php $routeMenuSub = Str::snake($menuSub->name); @endphp
                                     <!--begin:Menu item-->
                                     <div class="menu-item">
                                         <!--begin:Menu link-->
-                                        <a class="menu-link {{ request()->routeIs("$kop.$routeMenu.$routeMenuSub.*") ? 'active' : '' }}"
-                                            href="{{ Route::has("$kop.$routeMenu.$routeMenuSub.index") ? route("$kop.$routeMenu.$routeMenuSub.index") : route('error') }}"
-                                            wire:navigate>
+                                        <a wire:navigate
+                                            class="menu-link {{ request()->routeIs("$kop.$routeMenu.$routeMenuSub.*") ? 'active' : '' }}"
+                                            href="{{ Route::has("$kop.$routeMenu.$routeMenuSub.index") ? route("$kop.$routeMenu.$routeMenuSub.index") : route('error') }}">
                                             <span class="menu-bullet">
                                                 <span class="bullet bullet-dot"></span>
                                             </span>
-                                            <span class="menu-title"> {{ $menuSub['name'] }} </span>
+                                            <span class="menu-title"> {{ $menuSub->name }} </span>
                                         </a>
                                         <!--end:Menu link-->
                                     </div>
@@ -94,7 +94,7 @@
                             <!--begin:Menu link-->
                             <span class="menu-link">
                                 <span class="menu-icon">{!! getIcon('abstract-26', 'fs-2') !!}</span>
-                                <span class="menu-title"> {{ $row['name'] }} </span>
+                                <span class="menu-title"> {{ $row->name }} </span>
                                 {{-- <span class="menu-arrow"></span> --}}
                             </span>
                             <!--end:Menu link-->

@@ -29,24 +29,8 @@ class ViewServiceProvider extends ServiceProvider
                 $menuSubs->orderBy('index_sort');
             }])->orderBy('index_sort')
                 ->get()
-                ->groupBy('group')
-                ->toArray();
-
-            // dd($menus);
-
-            // $menus = Menu::all()
-            //     ->sortBy(function ($data) {
-            //         return $data->perent_index_sort . '-' . $data->child_index_sort;
-            //     })
-            //     ->groupBy('group') // Grup berdasarkan 'group'
-            //     ->map(function ($items) {
-            //         return $items->groupBy('perent'); // Grup ulang berdasarkan 'perent'
-            //     })
-            //     ->toArray();
-
-            // dd($menus);
-
-            $view->with('menus', $menus);
+                ->groupBy('group');
+            $view->with(compact('menus'));
         });
     }
 }
