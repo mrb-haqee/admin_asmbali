@@ -121,8 +121,7 @@
                                             <!--begin:: Avatar -->
                                             <div
                                                 class="symbol symbol-circle symbol-50px overflow-hidden me-3 d-none d-sm-block">
-                                                <a href="{{ route('user-management.users.show', $user) }}"
-                                                    wire:navigate>
+                                                <a href="{{ route('user-management.users.show', $user) }}">
                                                     @if ($user->profile_photo_url)
                                                         <div class="symbol-label">
                                                             <img src="{{ $user->profile_photo_url }}" class="w-100" />
@@ -139,8 +138,7 @@
                                             <!--begin::User details-->
                                             <div class="d-flex flex-column justify-content-start fw-bold">
                                                 <a href="{{ route('user-management.users.show', $user) }}"
-                                                    class="text-gray-800 text-hover-primary mb-1 text-start"
-                                                    wire:navigate>
+                                                    class="text-gray-800 text-hover-primary mb-1 text-start">
                                                     {{ $user->name }}
                                                 </a>
                                                 <span class="text-muted d-none d-sm-block">{{ $user->email }}</span>

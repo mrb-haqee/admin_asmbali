@@ -34,10 +34,37 @@
                             @enderror
                         </div>
 
+                        <div class="mb-7">
+                            <label class="required fw-semibold fs-6 mb-5">Role</label>
+                            @error('roles')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                            @foreach ($data_roles as $role)
+                                <div class="d-flex fv-row">
+                                    <div class="form-check form-check-custom form-check-solid">
+                                        <input class="form-check-input me-3"
+                                            wire:click="toggleRoles('{{ $role->id }}')" type="checkbox"
+                                            @if (in_array($role->id, $roles)) checked @endif />
+                                        <label class="form-check-label">
+                                            <div class="fw-bold text-gray-800">
+                                                {{ ucwords($role->name) }}
+                                            </div>
+                                            <div class="text-gray-600">
+                                                {{ $role->description }}
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                @if (!$loop->last)
+                                    <div class='separator separator-dashed my-5'></div>
+                                @endif
+                            @endforeach
+                        </div>
+
                     </div>
                     <div class="text-center pt-15">
                         <button type="reset" class="btn btn-secondary me-3" data-bs-dismiss="modal" aria-label="Close"
-                            wire:loading.attr="disabled" wire:target="resetFlag">Close</button>
+                            wire:loading.attr="disabled">Close</button>
                         <button type="submit" class="btn {{ $flag === 'update' ? 'btn-info' : 'btn-primary' }}"
                             data-kt-users-modal-action="submit">
                             <span class="indicator-label" wire:loading.remove>Submit</span>
@@ -56,71 +83,3 @@
     </div>
     <!--end::Modal dialog-->
 </div>
-
-@push('scripts')
-    <script>
-        $(document).ready(function() {
-
-            var PageMenuSub = function() {
-                if (@this === undefined) {
-                    return;
-                }
-
-                $("#modal_menu_sub").on('hidden.bs.modal', function() {
-                    if (@this.get('flag') === 'update') {
-                        @this.call('resetFlag');
-                    }
-                });
-
-                $('#table_menu [data-kt-action="update_row"]').each(function() {
-                    $(this).on('click', function() {
-                        @this.call('update', $(this).data('data-id'));
-                    });
-                });
-
-                $('#table_menu [data-kt-action="delete_row"]').each(function() {
-                    $(this).on('click', function(e) {
-                        e.preventDefault();
-                        Swal.fire({
-                            title: "Apakah Anda yakin?",
-                            text: "Data yang dihapus tidak dapat dikembalikan!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            cancelButtonText: "Batal",
-                            confirmButtonText: "Ya, hapus!",
-                            buttonsStyling: false,
-                            customClass: {
-                                cancelButton: "btn btn-secondary",
-                                confirmButton: "btn btn-danger",
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                @this.call('delete', [$(this).data('data-id')]);
-                            } else if (result.dismiss === Swal.DismissReason
-                                .cancel) {
-                                Swal.fire({
-                                    title: "Dibatalkan",
-                                    text: "Data Anda aman dan tidak dihapus.",
-                                    icon: "success",
-                                    timer: 2000,
-                                    confirmButtonText: "OK",
-                                    customClass: {
-                                        confirmButton: "btn btn-secondary"
-                                    }
-                                });
-                            }
-                        });
-                    });
-                });
-
-                KTMenu.createInstances();
-            };
-
-            Livewire.hook("morphed", () => {
-                PageMenuSub();
-            })
-
-            PageMenuSub();
-        });
-    </script>
-@endpush

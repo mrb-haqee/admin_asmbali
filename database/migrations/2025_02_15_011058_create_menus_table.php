@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->string('group', 255); //* pilih antara 'masterdata', 'administrasi', 'web_asm','web_tpq',
+            $table->string('group', 255); //* pilih antara 'konfugurasu', 'administrasi', 'web_asm','web_tpq',
             $table->string('name', 255);
             $table->enum('option', ['__YES__', '__NO__'])->default('__NO__');
+            $table->json('permissions')->default(null);
             $table->unsignedInteger('index_sort');
 
             $table->string('status', 30)->default('__ON__');

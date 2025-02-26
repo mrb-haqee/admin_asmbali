@@ -141,7 +141,7 @@
                     </div>
                     <div class="text-center pt-15">
                         <button type="reset" class="btn btn-secondary me-3" data-bs-dismiss="modal" aria-label="Close"
-                            wire:loading.attr="disabled" wire:target="resetFlag">Close</button>
+                            wire:loading.attr="disabled">Close</button>
                         <button type="submit" class="btn {{ $flag === 'update' ? 'btn-info' : 'btn-primary' }}"
                             data-kt-users-modal-action="submit">
                             <span class="indicator-label" wire:loading.remove>Submit</span>

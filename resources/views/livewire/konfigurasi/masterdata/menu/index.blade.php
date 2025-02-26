@@ -9,7 +9,7 @@
     @endsection
 
 
-    @livewire('konfigurasi.masterdata.menu.daftar-menu')
-    @livewire('konfigurasi.masterdata.menu.form-menu')
-
+    @livewire('konfigurasi.masterdata.menu.data-menu')
+    {{-- @livewire('konfigurasi.masterdata.menu.daftar-menu') --}}
+ 
 </x-default-layout>

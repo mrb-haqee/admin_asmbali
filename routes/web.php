@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'menu.access'])->group(function () {
 
     Route::get('/', [DashboardController::class, 'index']);
 

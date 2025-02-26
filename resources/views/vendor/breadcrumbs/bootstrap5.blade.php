@@ -4,7 +4,7 @@
             @if (!$loop->last)
                 <!--begin::Item-->
                 <li class="breadcrumb-item text-muted">
-                    <a href="{{ $breadcrumb->url }}" class="text-muted text-hover-primary" wire:navigate>
+                    <a href="{{ $breadcrumb->url }}" wire:navigate class="text-muted text-hover-primary">
                         {{ $breadcrumb->title }}
                     </a>
                 </li>
