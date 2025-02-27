@@ -9,10 +9,6 @@
             class="bg-danger px-4 py-3 fw-bold rounded text-white text-center">
             <i class="fas fa-arrow-alt-circle-left fs-5 text-white me-2 pt-1"></i> <span>Back</span>
         </a>
-        {{-- <a wire:navigate href="{{ route('konfigurasi.masterdata.menu.index') }}"
-            class="bg-danger px-4 py-3 fw-bold rounded text-white d-flex justify-content-center align-content-center">
-            {!! getIcon('left-square', 'text-white fs-3 text-center me-3') !!} <span>Back</span>
-        </a> --}}
     @endsection
 
     @section('breadcrumbs')
@@ -54,10 +50,9 @@
         <!--end::Sidebar-->
         <!--begin::Content-->
         <div class="flex-lg-row-fluid ms-lg-15">
-            @livewire('konfigurasi.masterdata.menu.detail.daftar-menu-sub', compact('menu'))
+            @livewire('konfigurasi.masterdata.menu.detail.data-menu-sub', compact('menu'))
         </div>
         <!--end::Content-->
     </div>
 
-    @livewire('konfigurasi.masterdata.menu.detail.form-menu-sub', compact('menu'))
 </x-default-layout>
