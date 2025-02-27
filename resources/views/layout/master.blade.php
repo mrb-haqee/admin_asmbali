@@ -78,6 +78,10 @@
     <!--end::Javascript-->
 
     <script data-navigate-once>
+        document.addEventListener('livewire:navigated', () => {
+            $("[data-control='select2']").select2()
+
+        });
         document.addEventListener('livewire:init', () => {
             // ================= Toastr =================
             Livewire.on('success', ([message, isCLose = true]) => {
@@ -157,6 +161,7 @@
             Livewire.hook("morphed", () => {
                 KTMenu.createInstances();
                 $("[data-control='select2']").select2()
+                console.log('Livewire morphed');
             })
         });
     </script>

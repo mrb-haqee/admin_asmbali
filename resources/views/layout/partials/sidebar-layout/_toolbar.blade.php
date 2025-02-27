@@ -5,10 +5,10 @@
         @include(config('settings.KT_THEME_LAYOUT_DIR') . '/partials/sidebar-layout/_page-title')
         <!--begin::Actions-->
         <div class="d-flex align-items-center gap-2 gap-lg-3">
+            @yield('toolbar-header')
         </div>
         <!--end::Actions-->
     </div>
     <!--end::Toolbar container-->
 </div>
 <!--end::Toolbar-->
-
