@@ -9,12 +9,8 @@
     @endsection
     <!--begin::Content container-->
     <div id="kt_app_content_container" class="app-container container-xxl">
-        @livewire('konfigurasi.aksesibilitas.roles.daftar-roles')
+        @livewire('konfigurasi.aksesibilitas.roles.data-roles')
     </div>
     <!--end::Content container-->
-
-    <!--begin::Modal-->
-    @livewire('konfigurasi.aksesibilitas.roles.form-roles')
-    <!--end::Modal-->
 
 </x-default-layout>
