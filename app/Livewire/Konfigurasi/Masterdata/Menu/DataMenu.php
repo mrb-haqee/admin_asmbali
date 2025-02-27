@@ -14,6 +14,8 @@ use Spatie\Permission\Models\Role;
 
 class DataMenu extends Component
 {
+    public bool $testing = false;
+
     public $id, $option, $flag = 'tambah';
 
     #[Rule('required|string')]
@@ -31,7 +33,7 @@ class DataMenu extends Component
     public function submit($flag = 'confirm')
     {
         $this->validate();
-        if ($flag === 'confirm' && $this->flag === 'update') {
+        if (!$this->testing && $flag === 'confirm' && $this->flag === 'update') {
             $this->dispatch('swal-confirm', 1, 'konfigurasi.masterdata.menu.submit', ['text' => "Data Menu \"{$this->name}\" yang diupdate akan merubah permission juga dan tidak dapat dikembalikan!"]);
             return;
         }
