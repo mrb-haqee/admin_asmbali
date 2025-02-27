@@ -5,6 +5,7 @@ namespace App\Livewire\Konfigurasi\Masterdata\Menu;
 use App\Models\Menu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -22,73 +23,64 @@ class DataMenu extends Component
     public $group;
 
     #[Rule('required|array')]
-    public array $checked_permission = ['view', 'create', 'read', 'update', 'delete'];
+    public array $checked_permission = ['read', 'create', 'update', 'delete'];
 
     public $search = '';
 
-    public function submit()
+    #[On('konfigurasi.masterdata.menu.submit')]
+    public function submit($flag = 'confirm')
     {
         $this->validate();
+        if ($flag === 'confirm' && $this->flag === 'update') {
+            $this->dispatch('swal-confirm', 1, 'konfigurasi.masterdata.menu.submit', ['text' => "Data Menu \"{$this->name}\" yang diupdate akan merubah permission juga dan tidak dapat dikembalikan!"]);
+            return;
+        }
+
         DB::transaction(function () {
+            $this->checked_permission = !$this->option ? $this->checked_permission : [];
 
             $data = [
                 'group' => $this->group,
                 'name' => $this->name,
                 'option' => $this->option ? '__YES__' : '__NO__',
-                'permissions' => $this->option ? json_encode($this->checked_permission) : null,
+                'permissions' => json_encode($this->checked_permission),
                 'index_sort' => Menu::where('group', $this->group)->count(),
                 'user_id' => Auth::id()
             ];
 
+
             $menu = Menu::find($this->id) ?? Menu::create($data);
 
-            if ($this->option && $this->flag === 'tambah') {
+            if (!$this->option && $this->flag === 'tambah') {
                 foreach ($this->checked_permission as $p) {
-                    $permission = Permission::create(['name' => "$p $this->group.$this->name"]);
+                    $n_name = Str::lower("$p $this->group.$this->name");
+                    $permission = Permission::create(['name' => $n_name]);
                     $role = Role::findByName('administrator');
                     $role->givePermissionTo($permission);
                 }
             }
 
             if ($this->flag === 'update') {
-                $existingPermissions = Permission::where('name', 'like', "%$this->group.$this->name%")->get();
-                if ($existingPermissions->isEmpty()) {
-                    if ($this->option) {
-                        foreach ($this->checked_permission as $p) {
-                            $permission = Permission::create(['name' => "$p $this->group.$this->name"]);
-                            $role = Role::findByName('administrator');
-                            $role->givePermissionTo($permission);
-                        }
+                $existingPermissions = Permission::where('name', 'like', "%{$menu->group}.{$menu->name}%")->get();
+                $newPermissions = collect($this->checked_permission)->map(fn($p) => Str::lower("$p {$this->group}.{$this->name}"));
+
+                $existingPermissions->each(function ($permission) use ($newPermissions) {
+                    if ($newPermissions->contains($permission->name)) {
+                        $newPermissions = $newPermissions->reject($permission->name);
+                    } else {
+                        $permission->delete();
                     }
-                } else {
-                    foreach ($existingPermissions as $permission) {
-                        if (in_array(explode(' ', $permission->name)[0], $this->checked_permission)) {
-                            $newName = str_replace($this->name, $this->name, $permission->name);
-                            $permission->name = $newName;
-                            $permission->save();
-                        } else {
-                            $permission->delete();
-                        }
-                    }
-                    if ($this->option) {
-                        foreach ($this->checked_permission as $p) {
-                            if (!$existingPermissions->contains('name', "$p $this->group.$this->name")) {
-                                $permission = Permission::create(['name' => "$p $this->group.$this->name"]);
-                                $role = Role::findByName('administrator');
-                                $role->givePermissionTo($permission);
-                            }
-                        }
-                    }
-                }
-                foreach ($data as $k => $v) {
-                    if ($k === 'user_id') continue;
-                    $menu->$k = $v;
-                }
-                $menu->user_id_update = Auth::id();
-                $menu->save();
+                });
+
+                $newPermissions->each(function ($permissionName) {
+                    $permission = Permission::firstOrCreate(['name' => $permissionName]);
+                    Role::findByName('administrator')->givePermissionTo($permission);
+                });
+
+                $menu->update(array_merge($data, ['user_id_update' => Auth::id()]));
             }
 
-            $this->dispatch('success', "Menu Berhasil di " . $this->flag === 'update' ? "Tambah" :  "Update");
+            $this->dispatch('success', "Menu Berhasil di " . ($this->flag === 'update' ? "Update" : "Tambah"));
             $this->reset();
         });
     }
@@ -107,12 +99,15 @@ class DataMenu extends Component
             return;
         }
 
+        $permissions = Permission::where('name', 'like', "%{$menu->group}.{$menu->name}%")->get();
+        $permissions->each(fn($p) => $p->delete());
+
         $menu->delete();
         $this->dispatch('success', "Menu \"{$menu->name}\" berhasil di delete.");
     }
     public function setFrom($id): void
     {
-        if (is_null($id)) {
+        if ($id === null) {
             $this->reset();
             return;
         };
@@ -124,7 +119,7 @@ class DataMenu extends Component
         $this->group = $menu->group;
         $this->name = $menu->name;
         $this->option = $menu->option === '__YES__' ? true : false;
-        $this->checked_permission = json_decode($menu->roles, true);
+        $this->checked_permission = json_decode($menu->permissions, true);
     }
 
     public function toggleRoles($value)
@@ -152,7 +147,7 @@ class DataMenu extends Component
         }
 
         $dataDaftar = $dataDaftar->orderBy('group')->orderBy('index_sort')->get();
-        $permissions = array('view', 'create', 'read', 'update', 'delete', 'print', 'export', 'import');
+        $permissions = array('create', 'update', 'delete', 'print', 'export', 'import');
         return view('livewire.konfigurasi.masterdata.menu.data-menu', compact('dataDaftar', 'permissions'));
     }
 
@@ -160,5 +155,17 @@ class DataMenu extends Component
     {
         $this->resetErrorBag();
         $this->resetValidation();
+    }
+
+    public function placeholder()
+    {
+        return <<<'HTML'
+        <div>
+            <span class="placeholder col-12 placeholder-lg"></span>
+            <span class="placeholder col-12"></span>
+            <span class="placeholder col-12 placeholder-sm"></span>
+            <span class="placeholder col-12 placeholder-xs"></span>
+        </div>
+        HTML;
     }
 }

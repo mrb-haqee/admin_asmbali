@@ -36,44 +36,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($dataDaftar as $row)
-                                <tr>
-                                    <td> {{ $loop->iteration }} </td>
-                                    <td> {{ $row->group }} </td>
-                                    <td> {{ $row->name }} </td>
-                                    <td>
-                                        @if ($row->option === '__YES__')
-                                            <span class="badge badge-light-info">Perent</span>
-                                        @else
-                                            <span class="badge badge-light-success">Child</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-nowrap align-middle">
-                                        <x-button.dropdown>
+                            @if ($dataDaftar->isEmpty())
+                                <x-table.data-not-found :colspan="5" />
+                            @else
+                                @foreach ($dataDaftar as $row)
+                                    <tr>
+                                        <td> {{ $loop->iteration }} </td>
+                                        <td> {{ $row->group }} </td>
+                                        <td> {{ $row->name }} </td>
+                                        <td>
                                             @if ($row->option === '__YES__')
+                                                <span class="badge badge-light-info">Perent</span>
+                                            @else
+                                                <span class="badge badge-light-success">Child</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-nowrap align-middle">
+                                            <x-button.dropdown>
+                                                @if ($row->option === '__YES__')
+                                                    <div class="menu-item px-3 ">
+                                                        <a wire:navigate
+                                                            href="{{ route('konfigurasi.masterdata.menu.show', $row) }}"
+                                                            class="menu-link px-3">
+                                                            <i class="fas fa-list me-3"></i> Detail
+                                                        </a>
+                                                    </div>
+                                                @endif
                                                 <div class="menu-item px-3 ">
-                                                    <a href="{{ route('konfigurasi.masterdata.menu.show', $row) }}"
-                                                        wire:navigate class="menu-link px-3">
-                                                        <i class="fas fa-list me-3"></i> Detail
+                                                    <a wire:click="setFrom({{ $row->id }})" class="menu-link px-3"
+                                                        data-bs-toggle="modal" data-bs-target="#modal_menu">
+                                                        <i class="fas fa-edit me-3"></i> Edit
                                                     </a>
                                                 </div>
-                                            @endif
-                                            <div class="menu-item px-3 ">
-                                                <a wire:click="setFrom({{ $row->id }})" class="menu-link px-3"
-                                                    data-bs-toggle="modal" data-bs-target="#modal_menu">
-                                                    <i class="fas fa-edit me-3"></i> Edit
-                                                </a>
-                                            </div>
-                                            <div class="menu-item px-3">
-                                                <a wire:click="delete({{ $row->id }}, 'confirm')"
-                                                    class="menu-link px-3">
-                                                    <i class="fas fa-trash me-3"></i>Delete
-                                                </a>
-                                            </div>
-                                        </x-button.dropdown>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                                <div class="menu-item px-3">
+                                                    <a wire:click="delete({{ $row->id }}, 'confirm')"
+                                                        class="menu-link px-3">
+                                                        <i class="fas fa-trash me-3"></i>Delete
+                                                    </a>
+                                                </div>
+                                            </x-button.dropdown>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
