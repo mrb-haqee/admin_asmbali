@@ -27,7 +27,7 @@ class ViewServiceProvider extends ServiceProvider
 
             $menus = Menu::with(['menuSubs' => function ($menuSubs) {
                 $menuSubs->orderBy('index_sort');
-            }])->orderBy('index_sort')
+            }])->orderBy('group')->orderBy('index_sort')
                 ->get()
                 ->groupBy('group');
             $view->with(compact('menus'));
