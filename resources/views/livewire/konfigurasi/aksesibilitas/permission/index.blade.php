@@ -8,11 +8,6 @@
         {{ Breadcrumbs::render('konfigurasi.aksesibilitas.permission.index') }}
     @endsection
 
-    @livewire('konfigurasi.aksesibilitas.permission.daftar-permission')
-    @livewire('konfigurasi.aksesibilitas.permission.form-permission')
-
-    @push('scripts')
-        <script></script>
-    @endpush
+    @livewire('konfigurasi.aksesibilitas.permission.data-permission')
 
 </x-default-layout>
