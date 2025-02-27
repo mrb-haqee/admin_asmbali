@@ -10,6 +10,7 @@ class Form extends Component
 {
     public $id;
     public $flag;
+    public $sizeModal;
 
     /**
      * Create a new component instance.
@@ -17,10 +18,11 @@ class Form extends Component
      * @param string $id Modal
      * @param string $title
      */
-    public function __construct(string $id = 'default', string $flag = 'tambah')
+    public function __construct(string $id = 'default', string $flag = 'tambah', string $sizeModal = '')
     {
         $this->id = $id;
         $this->flag = $flag;
+        $this->sizeModal = $sizeModal;
     }
 
 
@@ -32,6 +34,7 @@ class Form extends Component
         return view('components.modal.form', [
             'id' => $this->id,
             'flag' => $this->flag,
+            'sizeModal' => $this->sizeModal,
         ]);
     }
 }
