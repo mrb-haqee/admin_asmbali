@@ -78,6 +78,12 @@
     <!--end::Javascript-->
 
     <script data-navigate-once>
+        const lwClassToKebab = (className) =>
+            className.replace(/^App\\Livewire\\/, '')
+            .replace(/\\/g, '.')
+            .replace(/([a-z])([A-Z])/g, '$1-$2')
+            .toLowerCase();
+
         document.addEventListener('livewire:navigated', () => {
             $("[data-control='select2']").select2()
 
@@ -115,12 +121,15 @@
                 });
             });
 
-            Livewire.on('swal-confirm', ([id, listener, more]) => {
-                let [title, message, icon, confirmButtonText] = [
+            Livewire.on('swal-confirm', ([config, more = {}]) => {
+
+                let [to, listener] = config;
+                let [data, title, message, icon, confirmButtonText] = [
+                    more?.data || null,
                     more?.title || 'Apakah Anda yakin?',
                     more?.text || 'Data yang dihapus tidak dapat dikembalikan!',
                     more?.icon || 'warning',
-                    more?.confirmButtonText || 'Ok, got it!'
+                    more?.confirmButtonText || 'Oke, lanjut!'
                 ];
 
                 Swal.fire({
@@ -137,8 +146,7 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-
-                        Livewire.dispatch(listener, [id, 'delete']);
+                        Livewire.dispatchTo(lwClassToKebab(to), listener, ['delete', data]);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         Swal.fire({
                             title: "Dibatalkan",
@@ -161,7 +169,6 @@
             Livewire.hook("morphed", () => {
                 KTMenu.createInstances();
                 $("[data-control='select2']").select2()
-                console.log('Livewire morphed');
             })
         });
     </script>
