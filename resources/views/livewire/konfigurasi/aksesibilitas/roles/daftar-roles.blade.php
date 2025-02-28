@@ -15,7 +15,7 @@
                         </h2>
                     </div>
                     <div class="card-toolbar">
-                        <a wire:click="delete({{ $role->id }}, 'confirm')" href="#"
+                        <a wire:click="delete('confirm', {{ $role->id }})" href="#"
                             class="btn btn-icon btn-sm btn-active-color-primary delete-role" data-bs-toggle="tooltip"
                             title="Delete Role" data-bs-trigger="hover">
                             {!! getIcon('cross', 'fs-1 text-danger bg-light') !!}

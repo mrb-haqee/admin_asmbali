@@ -33,23 +33,6 @@ class FormRoles extends Component
         $this->checked_permissions = $role->permissions->pluck('name');
     }
 
-    #[On('delete')]
-    public function delete($id, $flag)
-    {
-        if (!$role = Role::find($id)) {
-            $this->dispatch('error', 'Role tidak ditemukan.');
-            return;
-        }
-
-        if (!app()->runningUnitTests() && $flag === 'confirm') {
-            $this->dispatch('swal-confirm', $id, 'aksesibilitas.roles.delete', ['text' => "Data role {$role->name} yang dihapus tidak dapat dikembalikan"]);
-            return;
-        }
-
-        $role->delete();
-        $this->dispatch('success', 'Role berhasil didelete.');
-    }
-
     public function submit()
     {
         $this->validate();
