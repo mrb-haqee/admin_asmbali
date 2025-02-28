@@ -445,3 +445,23 @@ if (!function_exists('loadScript')) {
         return file_exists(resource_path($path)) ? "function () {" . file_get_contents(resource_path($path)) . "}" : '';
     }
 }
+
+if (!function_exists('lwClassToKebab')) {
+    /**
+     * Get icon
+     *
+     * @param $path
+     *
+     * @return string
+     */
+    function lwClassToKebab(string $className): string
+    {
+        return strtolower(
+            preg_replace(
+                ['/^App\\\\Livewire\\\\/', '/\\\\/', '/([a-z])([A-Z])/'],
+                ['', '.', '$1-$2'],
+                $className
+            )
+        );
+    }
+}
