@@ -14,49 +14,34 @@ class DaftarRolesSub extends Component
 {
     // ==== Livewire Datatables ====
     use WithPagination;
-    public $paginationTheme = 'bootstrap';
-    public $perPage = 5;
+    public $paginationTheme = 'bootstrap', $perPage = 5;
     public $checked_data = [];
-
-    // ==== Livewire Datatables ====
-
     public Role $role;
 
-    protected $listeners = [
-        'success' => '$refresh',
-        'error' => '$refresh',
-        'swal' => '$refresh',
-    ];
-
-    #[On('aksesibilitas.roles.detail.delete')]
-    public function deleteRole($id, $flag)
+    #[On('delete')]
+    public function delete($flag, $id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            $this->dispatch('error', 'User tidak ditemukan.');
+        if (!$user = User::find($id)) {
+            $this->dispatch('error', 'Data tidak ditemukan.');
             return;
         }
+
         if ($user->id === Auth::id()) {
             $this->dispatch('error', 'Tidak bisa menghapus Akun saat ini.');
             return;
         }
 
         if ($flag === 'confirm') {
-            $this->dispatch('swal-confirm', $id, 'aksesibilitas.roles.detail.delete', ['text' => "Data User roles {$user->name} yang dihapus tidak dapat dikembalikan"]);
+            $this->dispatch('swal-confirm', [DaftarRolesSub::class, 'delete'], ['data' => $id]);
             return;
         }
 
-        if ($user) {
-            $user->roles()->detach();
-            $this->dispatch('swal', 'Role has been deleted successfully');
-        } else {
-            $this->dispatch('error', 'User not found');
-        }
+        $user->roles()->detach();
+        $this->dispatch('swal', 'User berhasil dihapus dari Role.');
     }
 
-    #[On('aksesibilitas.roles.detail.delete-checked')]
-    public function deleteRoleChecked($data, $flag)
+    #[On('deleteChecked')]
+    public function deleteChecked($flag)
     {
         if (in_array(Auth::id(), $this->checked_data)) {
             $this->dispatch('error', 'Tidak bisa menghapus Akun saat ini.');
@@ -64,7 +49,7 @@ class DaftarRolesSub extends Component
         }
 
         if ($flag === 'confirm') {
-            $this->dispatch('swal-confirm', $this->checked_data, 'aksesibilitas.roles.detail.delete-checked', ['text' => "Data User roles yang dihapus tidak dapat dikembalikan"]);
+            $this->dispatch('swal-confirm', [DaftarRolesSub::class, 'deleteChecked']);
             return;
         }
 
@@ -73,11 +58,11 @@ class DaftarRolesSub extends Component
             $user->roles()->detach();
         }
 
-        $this->dispatch('swal', 'Role has been deleted successfully');
+        $this->dispatch('swal', 'User berhasil dihapus dari Role.');
         $this->checked_data = [];
     }
 
-    public function toggleChecked($id)
+    public function tgCheck($id)
     {
         if (in_array($id, $this->checked_data)) {
             $this->checked_data = array_diff($this->checked_data, [$id]);
@@ -91,6 +76,7 @@ class DaftarRolesSub extends Component
         $this->role = $role;
     }
 
+    #[On('refresh')]
     public function render()
     {
         $dataDaftar = User::whereIn('id', $this->role->users->pluck('id'))->paginate($this->perPage);
