@@ -11,20 +11,16 @@ use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class DataRoles extends Component
+class FormRoles extends Component
 {
-    public $flag = 'tambah';
-
     #[Rule('required|string')]
     public string $name = '';
-
-    public int $id = 0;
-
     #[Rule('required|array')]
     public $checked_permissions = [];
-
+    public int $id = 0;
     public $check_all;
 
+    #[On('setForm')]
     public function setForm($id)
     {
         if (!$role = Role::find($id)) {
@@ -32,17 +28,15 @@ class DataRoles extends Component
             return;
         }
 
-        $this->flag = 'update';
         $this->id = $role->id;
         $this->name = $role->name;
         $this->checked_permissions = $role->permissions->pluck('name');
     }
 
-    #[On('aksesibilitas.roles.delete')]
+    #[On('delete')]
     public function delete($id, $flag)
     {
-        $role = Role::find($id);
-        if (!$role) {
+        if (!$role = Role::find($id)) {
             $this->dispatch('error', 'Role tidak ditemukan.');
             return;
         }
@@ -53,16 +47,14 @@ class DataRoles extends Component
         }
 
         $role->delete();
-        $this->dispatch('success', 'Role has been deleted successfully');
+        $this->dispatch('success', 'Role berhasil didelete.');
     }
-
 
     public function submit()
     {
         $this->validate();
         DB::transaction(function () {
             $role = Role::find($this->id) ?? new Role();
-
             $role->name = $this->name;
 
             try {
@@ -79,6 +71,7 @@ class DataRoles extends Component
             $role->syncPermissions($this->checked_permissions);
 
             $this->dispatch('success', $this->id ? 'Role updated' : 'Role created');
+            $this->dispatch('refresh')->to(DaftarRoles::class);
             $this->reset();
         });
     }
@@ -88,7 +81,6 @@ class DataRoles extends Component
         $this->checked_permissions = $this->check_all ? Permission::all()->pluck('name') : [];
     }
 
-    #[On('success', 'swal')]
     public function render()
     {
         $permissions_by_group = [];
@@ -96,8 +88,7 @@ class DataRoles extends Component
             $ability = Str::after($permission->name, ' ');
             $permissions_by_group[$ability][] = $permission;
         }
-        $roles = Role::with('permissions')->get();
-        return view('livewire.konfigurasi.aksesibilitas.roles.data-roles', compact('roles', 'permissions_by_group'));
+        return view('livewire.konfigurasi.aksesibilitas.roles.form-roles', compact('permissions_by_group'));
     }
 
     public function updated()
