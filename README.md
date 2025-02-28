@@ -53,25 +53,3 @@
 | `#[LockedArray]` | Mencegah frontend mengubah struktur array | `#[LockedArray] public array $settings = ['theme' => 'dark'];` |
 | `#[Persist]` | Menyimpan nilai properti ke sesi agar tetap ada setelah refresh | `#[Persist] public int $counter = 0;` |
 
-
- <select id="group" class="form-select form-control-solid mb-3 mb-lg-0" wire:model.defer="group"
-    data-control="select2" data-placeholder="Select an option" data-allow-clear="true"
-    data-hide-search="true"
-    onchange="@this.set('group', Array.from(this.selectedOptions).map(option => option.value))" multiple>
-    <option></option>
-    <option value="konfigurasi">Konfigurasi</option>
-    <option value="administrasi">Administrasi</option>
-    <option value="web_asm">Web ASM</option>
-    <option value="web_tpq">Web TPQ</option>
-</select>
-
-<select id="group" class="form-select form-control-solid mb-3 mb-lg-0" wire:model.defer="group"
-    data-control="select2" data-placeholder="Select an option" data-allow-clear="true"
-    data-hide-search="true" onchange="@this.set('group', this.value)">
-    <option></option>
-    <option value="konfigurasi">Konfigurasi</option>
-    <option value="administrasi">Administrasi</option>
-    <option value="web_asm">Web ASM</option>
-    <option value="web_tpq">Web TPQ</option>
-</select>
-
