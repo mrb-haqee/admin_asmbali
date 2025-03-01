@@ -50,9 +50,10 @@
         <!--end::Sidebar-->
         <!--begin::Content-->
         <div class="flex-lg-row-fluid ms-lg-15">
-            @livewire('konfigurasi.masterdata.menu.detail.data-menu-sub', compact('menu'))
+            @livewire('konfigurasi.masterdata.menu.detail.daftar-menu-sub', compact('menu'))
         </div>
         <!--end::Content-->
     </div>
 
+    @livewire('konfigurasi.masterdata.menu.detail.form-menu-sub', compact('menu'))
 </x-default-layout>

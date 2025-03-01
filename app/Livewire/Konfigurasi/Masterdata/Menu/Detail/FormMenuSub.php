@@ -13,9 +13,10 @@ use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class DataMenuSub extends Component
+class FormMenuSub extends Component
 {
-    public $id, $flag = 'tambah';
+
+    public $id, $flag = 'tambah', $menu;
 
     #[Rule('required|string')]
     public $name;
@@ -23,21 +24,17 @@ class DataMenuSub extends Component
     #[Rule('required|array')]
     public array $checked_permission = ['read', 'create', 'update', 'delete'];
 
-    public $menu;
-
-    public $search = '';
-
-    #[On('konfigurasi.masterdata.menu.detail.submit')]
+    #[On('submit')]
     public function submit($flag = 'confirm')
     {
+
         $this->validate();
-        if ($flag === 'confirm' && $this->flag === 'update') {
-            $this->dispatch('swal-confirm', 1, 'konfigurasi.masterdata.menu.detail.submit', ['text' => "Data Menu Sub \"{$this->name}\" yang diupdate akan merubah permission juga dan tidak dapat dikembalikan!"]);
+        if (!app()->runningUnitTests() && $flag === 'confirm' && $this->flag === 'update') {
+            $this->dispatch('swal-confirm', [FormMenuSub::class, 'submit'], ['text' => "Data Menu Sub \"{$this->name}\" yang diupdate akan merubah permission juga dan tidak dapat dikembalikan!"]);
             return;
         }
 
         DB::transaction(function () {
-
             $data = [
                 'name' => $this->name,
                 'menu_id' => $this->menu->id,
@@ -58,7 +55,7 @@ class DataMenuSub extends Component
             }
 
             if ($this->flag === 'update') {
-                $existingPermissions = Permission::where('name', 'like', "%{$menuSub->group}.{$menuSub->name}%")->get();
+                $existingPermissions = Permission::where('name', 'like', "%{$this->menu->group}.{$this->menu->group}.{$menuSub->name}%")->get();
                 $newPermissions = collect($this->checked_permission)->map(fn($p) => Str::lower("$p {$this->menu->group}.{$this->menu->name}.$this->name"));
 
                 $existingPermissions->each(function ($permission) use ($newPermissions) {
@@ -77,32 +74,15 @@ class DataMenuSub extends Component
                 $menuSub->update(array_merge($data, ['user_id_update' => Auth::id()]));
             }
 
+
             $this->dispatch('success', "Menu Sub Berhasil di " . ($this->flag === 'update' ? "Update" : "Tambah"));
+            $this->dispatch('refresh')->to(DaftarMenuSub::class);
             $this->resetExcept('menu');
         });
     }
 
-    #[On('konfigurasi.masterdata.menu.detail.delete')]
-    public function delete($id, $flag)
-    {
-        $menuSub = MenuSub::find($id);
-        if (!$menuSub) {
-            $this->dispatch('error', 'Menu tidak ditemukan.');
-            return;
-        }
-
-        if ($flag === 'confirm') {
-            $this->dispatch('swal-confirm', $id, 'konfigurasi.masterdata.menu.detail.delete', ['text' => "Data Menu Sub \"{$menuSub->name}\" yang dihapus tidak dapat dikembalikan!"]);
-            return;
-        }
-
-        $permissions = Permission::where('name', 'like', "%{$menuSub->group}.{$menuSub->name}%")->get();
-        $permissions->each(fn($p) => $p->delete());
-
-        $menuSub->delete();
-        $this->dispatch('success', "Menu Sub berhasil di delete.");
-    }
-    public function setFrom($id): void
+    #[On('setForm')]
+    public function setForm($id): void
     {
         if ($id === null) {
             $this->resetExcept('menu');
@@ -117,7 +97,7 @@ class DataMenuSub extends Component
         $this->checked_permission = json_decode($menuSub->permissions, true);
     }
 
-    public function toggleRoles($value)
+    public function tgRoles($value)
     {
         if (in_array($value, $this->checked_permission)) {
             $this->checked_permission = array_diff($this->checked_permission, [$value]);
@@ -126,47 +106,21 @@ class DataMenuSub extends Component
         }
     }
 
+
     public function mount(Menu $menu)
     {
         $this->menu = $menu;
     }
 
-    #[On('success', 'swal')]
     public function render()
     {
-        $dataDaftar = MenuSub::query();
-        $dataDaftar->where('menu_id', $this->menu->id);
-
-        if (!empty($this->search)) {
-            $dataDaftar->where('name', 'like', "%{$this->search}%")
-                ->orWhere('group', 'like', "%{$this->search}%");
-        } else {
-            if (!empty($this->range) && str_contains($this->range, ' - ')) {
-                [$startDate, $endDate] = explode(' - ', $this->range);
-                // $query->whereBetween('created_at', [$startDate, $endDate]);
-            }
-        }
-
-        $dataDaftar = $dataDaftar->orderBy('index_sort')->get();
         $permissions = array('create', 'update', 'delete', 'print', 'export', 'import');
-        return view('livewire.konfigurasi.masterdata.menu.detail.data-menu-sub', compact('dataDaftar', 'permissions'));
+        return view('livewire.konfigurasi.masterdata.menu.detail.form-menu-sub', compact('permissions'));
     }
 
     public function updated(): void
     {
         $this->resetErrorBag();
         $this->resetValidation();
-    }
-
-    public function placeholder()
-    {
-        return <<<'HTML'
-        <div>
-            <span class="placeholder col-12 placeholder-lg"></span>
-            <span class="placeholder col-12"></span>
-            <span class="placeholder col-12 placeholder-sm"></span>
-            <span class="placeholder col-12 placeholder-xs"></span>
-        </div>
-        HTML;
     }
 }
