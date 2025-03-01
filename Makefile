@@ -6,6 +6,16 @@ reload:
 	php artisan config:clear
 	php artisan cache:clear
 
+clear:
+	php artisan cache:clear
+	php artisan config:clear
+	php artisan debugbar:clear
+	php artisan event:clear
+	php artisan optimize:clear
+	php artisan route:clear
+	php artisan view:cache
+	php artisan view:clear
+
 dev:
 	composer install
 	npm install --global yarn
