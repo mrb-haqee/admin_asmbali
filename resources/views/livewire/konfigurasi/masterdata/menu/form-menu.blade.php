@@ -43,8 +43,8 @@
                     <div class="col-md-4">
                         <label class=" fw-semibold fs-6 mb-2">Sub Menu</label>
                         <div class="form-check form-switch form-check-custom form-check-solid mb-3 mb-lg-0">
-                            <input class="form-check-input h-40px w-60px" type="checkbox" id="option"
-                                wire:model.live="option" name="option" />
+                            <input class="form-check-input " type="checkbox" id="option" wire:model.live="option"
+                                name="option" />
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -92,7 +92,7 @@
             <div class="text-center pt-15">
                 <button type="reset" class="btn btn-secondary me-3" data-bs-dismiss="modal" aria-label="Close"
                     wire:loading.attr="disabled">Close</button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn {{ $flag === 'tambah' ? 'btn-primary' : 'btn-info' }}">
                     <span class="indicator-label" wire:loading.remove>Submit</span>
                     <span class="indicator-progress" wire:loading wire:target="submit">
                         Please wait...

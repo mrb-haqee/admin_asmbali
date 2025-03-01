@@ -85,7 +85,7 @@ class FormMenu extends Component
     }
 
     #[On('setForm')]
-    public function setFrom($id): void
+    public function setForm($id): void
     {
         if ($id === null) {
             $this->reset();

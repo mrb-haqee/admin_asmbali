@@ -11,8 +11,8 @@
 
         <div class="card-toolbar">
             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
-                <button wire:click="$dispatchTo('{{ $pathForm }}','setForm', {id: null})" type="button"
-                    class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal_menu">
+                <button wire:click="$dispatchTo('{{ $pathForm }}','setForm', {id: null})" class="btn btn-primary"
+                    data-bs-toggle="modal" data-bs-target="#modal_menu">
                     {!! getIcon('plus-square', 'fs-2 ', tag: 'i') !!}
                     Menu
                 </button>
