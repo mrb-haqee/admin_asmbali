@@ -55,14 +55,14 @@
         <!--begin::Input group--->
         <div class="fv-row mb-8">
             <!--begin::Email-->
-            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" value="demo@demo.com"/>
+            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" value="@admin"/>
             <!--end::Email-->
         </div>
 
         <!--end::Input group--->
         <div class="fv-row mb-3">
             <!--begin::Password-->
-            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" value="demo"/>
+            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" value="admin"/>
             <!--end::Password-->
         </div>
         <!--end::Input group--->
@@ -72,9 +72,9 @@
             <div></div>
 
             <!--begin::Link-->
-            <a href="{{ route('password.request') }}" class="link-primary">
+            {{-- <a href="{{ route('password.request') }}" class="link-primary">
                 Forgot Password ?
-            </a>
+            </a> --}}
             <!--end::Link-->
         </div>
         <!--end::Wrapper-->
@@ -88,13 +88,13 @@
         <!--end::Submit button-->
 
         <!--begin::Sign up-->
-        <div class="text-gray-500 text-center fw-semibold fs-6">
+        {{-- <div class="text-gray-500 text-center fw-semibold fs-6">
             Not a Member yet?
 
             <a href="{{ route('register') }}" class="link-primary">
                 Sign up
             </a>
-        </div>
+        </div> --}}
         <!--end::Sign up-->
     </form>
     <!--end::Form-->

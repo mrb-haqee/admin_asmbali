@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Rule;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
@@ -15,114 +18,86 @@ class FormUser extends Component
     use WithFileUploads;
 
     public $user_login_id;
-    public $user_id;
+    public $id;
+
+    #[Rule('required|string', as: 'Name')]
     public $name;
     public $email;
+
+    #[Rule('required|string')]
     public $role;
+
+    #[Rule('nullable|sometimes|image|max:1024')]
     public $avatar;
     public $saved_avatar;
     public $flag = 'tambah';
 
-    protected $rules = [
-        'name' => 'required|string',
-        'email' => 'required|email|unique:users,email',
-        // 'role' => 'required|string',
-        'avatar' => 'nullable|sometimes|image|max:1024',
-    ];
+    public function rules()
+    {
+        return [
+            'email' => $this->flag === 'tambah'
+                ? 'required|email|unique:users,email'
+                : "required|email|unique:users,email,{$this->id},id",
+        ];
+    }
 
     public function submit(): void
     {
-        if ($this->flag === 'update') {
-            $this->rules['email'] = 'required|email|unique:users,email,' . $this->user_id . ',id';
-        }
-
-        $this->validate();
+        $this->validate(
+            // ['email' => $this->flag === 'tambah' ? 'required|email|unique:users,email' : "required|email|unique:users,email,{$this->id},id"]
+        );
 
         DB::transaction(function () {
-            // Prepare the data for creating a new user
             $data = [
                 'name' => $this->name,
             ];
 
-            if ($this->avatar) {
-                $data['profile_photo_path'] = $this->avatar->store('avatars', 'public');
-            } else {
-                $data['profile_photo_path'] = null;
-            }
+            $data['profile_photo_path'] = $this->avatar ? $this->avatar->store('avatars', 'public') : null;
 
             if ($this->flag === 'tambah') {
                 $data['password'] = Hash::make($this->email);
             }
 
-            // Update or Create a new user record in the database
             $data['email'] = $this->email;
-            $user = User::find($this->user_id) ?? User::create($data);
+            $user = User::find($this->id) ?? User::create($data);
 
             if ($this->flag === 'update') {
                 foreach ($data as $k => $v) {
                     $user->$k = $v;
                 }
-                $user->save();
-            }
 
-            if ($this->flag === 'update') {
+                $user->save();
                 $user->syncRoles($this->role);
 
-                // Emit a success event with a message
-                $this->dispatch('success', __('User updated'));
+                $this->dispatch('success', 'User berhasil diupdate.');
+            } else {
+                $user->assignRole($this->role);
+                $this->dispatch('success', 'User berhasil dibuat.');
             }
         });
 
-        // Reset the form fields after successful submission
         $this->reset();
-        $this->dispatch('proses-selesai');
+        $this->dispatch('refresh')->to(DaftarUser::class);
     }
 
-    public function delete($id)
+    #[On('setForm')]
+    public function setForm($id)
     {
-        // Prevent deletion of current user
-        if ($id == Auth::id()) {
-            $this->dispatch('error', 'User cannot be deleted');
+        if (!$user = User::find($id)) {
+            $this->reset();
             return;
-        }
+        };
 
-        // Delete the user record with the specified ID
-        User::destroy($id);
-
-        $this->dispatch('swal', __('Menu berhasil dihapus'), 'success');
-        $this->dispatch('proses-selesai');
-    }
-
-    public function update($id): void
-    {
         $this->flag = 'update';
-
-        $user = User::find($id);
-
-        $this->user_id = $user->id;
+        $this->id = $user->id;
         $this->saved_avatar = $user->profile_photo_url;
         $this->name = $user->name;
         $this->email = $user->email;
-        $this->role = $user->roles?->first()->name ?? '';
-
-        $this->dispatch('select2');
+        $this->role = $user->roles?->first()->name ?? null;
     }
 
-    public function resetFlag(): void
-    {
-        $this->flag === 'update' && $this->reset();
-    }
-    public function hydrate(): void
-    {
-        $this->resetErrorBag();
-        $this->resetValidation();
-
-        $this->user_login_id = Auth::user()->id;
-    }
     public function render()
     {
-
-
         $roles = Role::all();
 
         $roles_description = [
@@ -138,5 +113,11 @@ class FormUser extends Component
         }
 
         return view('livewire.konfigurasi.masterdata.user.form-user', compact('roles'));
+    }
+
+    public function updated(): void
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
     }
 }
