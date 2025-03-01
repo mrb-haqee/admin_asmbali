@@ -35,18 +35,27 @@ class FormUser extends Component
     public function rules()
     {
         return [
-            'email' => $this->flag === 'tambah'
-                ? 'required|email|unique:users,email'
-                : "required|email|unique:users,email,{$this->id},id",
+            'email' => [
+                'required',
+                'string',
+                'regex:/^@[\w]+$/', // Username harus diawali @ dan hanya boleh berisi huruf, angka, dan _
+                $this->flag === 'tambah'
+                    ? 'unique:users,email'
+                    : "unique:users,email,{$this->id},id",
+            ],
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'email.regex' => 'Username harus diawali dengan @.',
         ];
     }
 
+
     public function submit(): void
     {
-        $this->validate(
-            // ['email' => $this->flag === 'tambah' ? 'required|email|unique:users,email' : "required|email|unique:users,email,{$this->id},id"]
-        );
-
+        $this->validate();
         DB::transaction(function () {
             $data = [
                 'name' => $this->name,
@@ -56,6 +65,7 @@ class FormUser extends Component
 
             if ($this->flag === 'tambah') {
                 $data['password'] = Hash::make($this->email);
+                $data['email_verified_at'] = now();
             }
 
             $data['email'] = $this->email;

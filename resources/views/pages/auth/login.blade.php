@@ -1,7 +1,8 @@
 <x-auth-layout>
 
     <!--begin::Form-->
-    <form class="form w-100" novalidate="novalidate" id="kt_sign_in_form" data-kt-redirect-url="{{ route('dashboard') }}" action="{{ route('login') }}">
+    <form class="form w-100" novalidate="novalidate" id="kt_sign_in_form" data-kt-redirect-url="{{ route('dashboard') }}"
+        action="{{ route('login') }}">
         @csrf
         <!--begin::Heading-->
         <div class="text-center mb-11">
@@ -24,8 +25,9 @@
             <!--begin::Col-->
             <div class="col-md-6">
                 <!--begin::Google link--->
-                <a href="{{ url('/auth/redirect/google') }}?redirect_uri={{ url()->current() }}" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-                    <img alt="Logo" src="{{ image('svg/brand-logos/google-icon.svg') }}" class="h-15px me-3"/>
+                <a href="{{ url('/auth/redirect/google') }}?redirect_uri={{ url()->current() }}"
+                    class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+                    <img alt="Logo" src="{{ image('svg/brand-logos/google-icon.svg') }}" class="h-15px me-3" />
                     Sign in with Google
                 </a>
                 <!--end::Google link--->
@@ -35,9 +37,12 @@
             <!--begin::Col-->
             <div class="col-md-6">
                 <!--begin::Google link--->
-                <a href="#" class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
-                    <img alt="Logo" src="{{ image('svg/brand-logos/apple-black.svg') }}" class="theme-light-show h-15px me-3"/>
-                    <img alt="Logo" src="{{ image('svg/brand-logos/apple-black-dark.svg') }}" class="theme-dark-show h-15px me-3"/>
+                <a href="#"
+                    class="btn btn-flex btn-outline btn-text-gray-700 btn-active-color-primary bg-state-light flex-center text-nowrap w-100">
+                    <img alt="Logo" src="{{ image('svg/brand-logos/apple-black.svg') }}"
+                        class="theme-light-show h-15px me-3" />
+                    <img alt="Logo" src="{{ image('svg/brand-logos/apple-black-dark.svg') }}"
+                        class="theme-dark-show h-15px me-3" />
                     Sign in with Apple
                 </a>
                 <!--end::Google link--->
@@ -48,21 +53,37 @@
 
         <!--begin::Separator-->
         <div class="separator separator-content my-14">
-            <span class="w-125px text-gray-500 fw-semibold fs-7">Or with email</span>
+            <span class="w-125px text-gray-500 fw-semibold fs-7">Or with Username</span>
         </div>
         <!--end::Separator-->
 
         <!--begin::Input group--->
         <div class="fv-row mb-8">
             <!--begin::Email-->
-            <input type="text" placeholder="Email" name="email" autocomplete="off" class="form-control bg-transparent" value="@admin"/>
+            <input type="text" placeholder="@username" name="email" autocomplete="off"
+                class="form-control bg-transparent" value="@admin" />
             <!--end::Email-->
         </div>
 
         <!--end::Input group--->
-        <div class="fv-row mb-3">
+        <div class="fv-row mb-3" data-kt-password-meter="true">
             <!--begin::Password-->
-            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" value="admin"/>
+            {{-- <input type="password" placeholder="Password" name="password" autocomplete="off"
+                class="form-control bg-transparent" value="admin" /> --}}
+            <div class="position-relative mb-3">
+                <input class="form-control bg-transparent" type="password" placeholder="Password" name="password"
+                    autocomplete="off" value="admin" />
+
+                <!--begin::Visibility toggle-->
+                <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+                    data-kt-password-meter-control="visibility">
+                    <i class="ki-duotone ki-eye-slash fs-1"><span class="path1"></span><span
+                            class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+                    <i class="ki-duotone ki-eye d-none fs-1"><span class="path1"></span><span
+                            class="path2"></span><span class="path3"></span></i>
+                </span>
+                <!--end::Visibility toggle-->
+            </div>
             <!--end::Password-->
         </div>
         <!--end::Input group--->

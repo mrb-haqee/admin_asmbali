@@ -64,9 +64,9 @@
                 @enderror
             </div>
             <div class="fv-row mb-7">
-                <label class="required fw-semibold fs-6 mb-2">Email</label>
-                <input type="email" wire:model.defer="email" name="email"
-                    class="form-control form-control-solid mb-3 mb-lg-0" placeholder="example@domain.com" />
+                <label class="required fw-semibold fs-6 mb-2">Username</label>
+                <input type="text" wire:model.defer="email" name="email"
+                    class="form-control form-control-solid mb-3 mb-lg-0" placeholder="@username" />
                 @error('email')
                     <span class="text-danger">{{ $message }}</span>
                 @enderror
