@@ -84,10 +84,6 @@
             .replace(/([a-z])([A-Z])/g, '$1-$2')
             .toLowerCase();
 
-        document.addEventListener('livewire:navigated', () => {
-            $("[data-control='select2']").select2()
-
-        });
         document.addEventListener('livewire:init', () => {
             // ================= Toastr =================
             Livewire.on('success', ([message, isCLose = true]) => {
@@ -146,6 +142,8 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        console.log(to, listener, data);
+
                         Livewire.dispatchTo(lwClassToKebab(to), listener, ['delete', data]);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         Swal.fire({
@@ -169,6 +167,9 @@
             Livewire.hook("morphed", () => {
                 KTMenu.createInstances();
                 $("[data-control='select2']").select2()
+                $("[data-control='select2'][data-hide-search='true']").select2({
+                    minimumResultsForSearch: Infinity
+                });
             })
         });
     </script>
