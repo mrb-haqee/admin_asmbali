@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Account;
 use App\Models\Address;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UsersSeeder::class,
             MenusSeeder::class,
             RolesPermissionsSeeder::class,
+            AccountSeeder::class,
         ]);
 
         // \App\Models\User::factory(20)->create();
