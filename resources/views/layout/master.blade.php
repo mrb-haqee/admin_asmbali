@@ -84,6 +84,40 @@
             .replace(/([a-z])([A-Z])/g, '$1-$2')
             .toLowerCase();
 
+        const swalConfirm = (config, more) => {
+            let [to, listener] = config;
+            let data = more?.data || null;
+
+
+            Swal.fire({
+                title: more?.title || 'Apakah Anda yakin?',
+                text: more?.text || 'Data yang dihapus tidak dapat dikembalikan!',
+                icon: more?.icon || 'warning',
+                showCancelButton: true,
+                cancelButtonText: "Batal",
+                confirmButtonText: more?.confirmButtonText || 'Oke, lanjut!',
+                buttonsStyling: false,
+                customClass: {
+                    cancelButton: "btn btn-secondary",
+                    confirmButton: "btn btn-danger",
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.dispatchTo(lwClassToKebab(to), listener, ['delete', data]);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: "Dibatalkan",
+                        icon: "success",
+                        timer: 2000,
+                        confirmButtonText: "OK",
+                        customClass: {
+                            confirmButton: "btn btn-secondary"
+                        }
+                    });
+                }
+            });
+        };
+
         document.addEventListener('livewire:init', () => {
             // ================= Toastr =================
             Livewire.on('success', ([message, isCLose = true]) => {
@@ -142,8 +176,6 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        console.log(to, listener, data);
-
                         Livewire.dispatchTo(lwClassToKebab(to), listener, ['delete', data]);
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
                         Swal.fire({
@@ -159,7 +191,10 @@
                 });
             });
 
-            // ================= Select2 =================
+            // ================= Modal =================
+            Livewire.on('show-modal', (id) => {
+                $('#' + id).modal('show');
+            });
 
 
 

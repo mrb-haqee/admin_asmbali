@@ -43,7 +43,8 @@
 
     @include('partials/_drawers')
 
-    @include('partials/_modals')
+    {{-- @include('partials/_modals') --}}
+    @yield('modals')
 
     @include('partials/_scrolltop')
 @endsection
