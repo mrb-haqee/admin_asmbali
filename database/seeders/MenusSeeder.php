@@ -34,6 +34,11 @@ class MenusSeeder extends Seeder
                         'index_sort' => '2',
                         'permissions' => json_encode(['read', 'create', 'update', 'delete']),
                     ],
+                    [
+                        'name' => 'Account',
+                        'index_sort' => '3',
+                        'permissions' => json_encode(['read', 'create', 'update', 'delete']),
+                    ],
                 ]
             ],
             [
